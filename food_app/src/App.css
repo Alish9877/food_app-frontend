@@ -6,6 +6,7 @@
   --secondary-bg: #e1efe6;
   --link-color-secondary: #e1efe6;
   --primary-button-hover: #160c28;
+  --primary-button-bg: #1d0e2f;
 }
 
 body {
@@ -13,6 +14,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: var(--secondary-bg);
+  color: var(--primary-bg);
 }
 
 button {
@@ -21,6 +23,7 @@ button {
   transition: all 0.2s ease;
   padding: 0.8em 1.2em;
   font-size: 1.1rem;
+  border-radius: 8px;
 }
 
 button,
@@ -34,6 +37,7 @@ header {
   justify-content: space-between;
   align-items: center;
   background-color: var(--primary-bg);
+  padding: 0 1em;
 }
 
 .logo,
@@ -76,8 +80,10 @@ main {
 .home-container,
 .signin {
   min-height: calc(100vh - 4em);
+  display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 }
 
 .home-container img {
@@ -87,9 +93,10 @@ main {
 
 .home-container button {
   padding: 0.8em 1.2em;
-  background-color: var(--primary-bg);
+  background-color: var(--primary-button-bg);
   color: var(--link-color-secondary);
   font-size: 1.1rem;
+  border-radius: 8px;
 }
 
 .home-container button:hover {
@@ -99,7 +106,6 @@ main {
 }
 
 .card-overlay {
-  /* border: 2px solid var(--primary-button-hover); */
   width: 60%;
   padding: 1em;
   border-radius: 8px;
@@ -114,10 +120,11 @@ form,
 
 form label {
   align-self: flex-start;
+  font-weight: 600;
 }
 
 .input-wrapper {
-  width: 80%;
+  width: 100%;
   margin: 0;
   padding: 0;
 }
@@ -126,7 +133,7 @@ form label {
   padding: 0.6em 1.2em;
   margin: 0.5em auto;
   width: 100%;
-  border-color: var(--primary-bg);
+  border: 2px solid var(--primary-bg);
   font-size: 1.1rem;
   outline: none;
 }
@@ -141,6 +148,7 @@ form button {
   color: var(--link-color-secondary);
   align-self: center;
   width: 100%;
+  border-radius: 8px;
 }
 
 form button:hover {
@@ -158,6 +166,7 @@ form button:disabled {
   justify-content: center;
   grid-gap: 1em;
   margin-top: 4em;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
 
 .col-4 {
@@ -165,25 +174,25 @@ form button:disabled {
 }
 
 .card {
-  width: 350px;
+  width: 100%;
+  max-width: 350px;
   height: 550px;
   background-color: var(--primary-bg);
   color: var(--secondary-bg);
   border-radius: 8px;
   padding: 1em;
   text-align: center;
+  box-shadow: 2px 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-.card p {
-  height: 50px;
-}
-
+.card p,
 .card h3 {
   height: 50px;
 }
 
 .card img {
   width: 100%;
+  height: auto;
 }
 
 .protected {
@@ -192,4 +201,23 @@ form button:disabled {
   justify-content: center;
   align-items: center;
   height: 80vh;
+}
+
+@media (max-width: 768px) {
+  .card {
+    width: 100%;
+    padding: 1em;
+  }
+
+  .home-container img {
+    max-width: 100%;
+  }
+
+  .input-wrapper input {
+    font-size: 1rem;
+  }
+
+  button {
+    font-size: 1rem;
+  }
 }
