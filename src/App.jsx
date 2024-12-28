@@ -5,7 +5,6 @@ import Register from './pages/Register'
 import SignIn from './pages/SignIn'
 import Feed from './pages/Feed'
 import Home from './pages/Home'
-import './App.css'
 
 const App = () => {
   const [user, setUser] = useState(null)
