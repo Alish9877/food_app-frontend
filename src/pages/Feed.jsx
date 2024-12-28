@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { GetPosts } from '../services/PostServices'
+import { GetPosts } from '../services/authService'
 
 const Feed = () => {
   const [posts, setPosts] = useState([])
