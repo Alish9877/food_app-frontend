@@ -1,16 +1,19 @@
 import { useState } from 'react'
 import { Route, Routes, BrowserRouter } from 'react-router-dom'
 import Nav from './components/Nav'
-import Register from './pages/Register'
-import SignIn from './pages/SignIn'
-import Feed from './pages/Feed'
-import Home from './pages/Home'
+import AccountSettingsPage from './pages/AccountSettingsPage'
+import AdminPage from './pages/AdminPage'
+import AuthPage from './pages/AuthPage'
+import DeliveryPage from './pages/DeliveryPage'
+import HomePage from './pages/HomePage'
+import MealPlansPage from './pages/MealPlansPage'
+import SubscriptionPage from './pages/SubscriptionPage'
+import './App.css'
 
 const App = () => {
   const [user, setUser] = useState(null)
 
   const handleLogOut = () => {
-    // Reset all auth related state and clear localStorage
     setUser(null)
     localStorage.clear()
   }
@@ -18,16 +21,16 @@ const App = () => {
   return (
     <div className="App">
       <BrowserRouter>
-        <Nav
-          user={user}
-          handleLogOut={handleLogOut}
-        />
+        <Nav user={user} handleLogOut={handleLogOut} />
         <main>
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/signin" element={<SignIn />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/feed" element={<Feed />} />
+            <Route path="/" element={<HomePage />} />
+            <Route path="/auth" element={<AuthPage />} />
+            <Route path="/account-settings" element={<AccountSettingsPage />} />
+            <Route path="/admin" element={<AdminPage />} />
+            <Route path="/deliveries" element={<DeliveryPage />} />
+            <Route path="/meal-plans" element={<MealPlansPage />} />
+            <Route path="/subscriptions" element={<SubscriptionPage />} />
           </Routes>
         </main>
       </BrowserRouter>
