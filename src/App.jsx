@@ -1,11 +1,10 @@
 import { useState } from 'react'
 import { Route, Routes, BrowserRouter } from 'react-router-dom'
 import Nav from './components/Nav'
-import Register from '../pages/Register'
-import SignIn from '../pages/SignIn'
-import Feed from '../pages/Feed'
-import Home from '../pages/Home'
-import './App.css'
+import Register from './pages/Register'
+import SignIn from './pages/SignIn'
+import Feed from './pages/Feed'
+import Home from './pages/Home'
 
 const App = () => {
   const [user, setUser] = useState(null)
