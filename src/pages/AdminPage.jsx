@@ -7,7 +7,7 @@ const AdminPage = () => {
       <h1>Admin Dashboard</h1>
       <p>Access tools to manage meal plans, subscriptions, and deliveries.</p>
     </div>
-  );
-};
+  )
+}
 
-export default AdminPage;
+export default AdminPage
