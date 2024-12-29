@@ -22,13 +22,3 @@ export const getUserDeliveries = async (userId) => {
   }
 };
 
-// Update delivery status (Admin only)
-export const updateDeliveryStatus = async (deliveryId, status) => {
-  try {
-    const response = await Client.put(`/deliveries/${deliveryId}/status`, { status });
-    return response.data;
-  } catch (error) {
-    console.error('Failed to update delivery status:', error);
-    throw error;
-  }
-};
