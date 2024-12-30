@@ -1,5 +1,5 @@
 // Placeholder for imports
-
+import './MealPlan.css';
 const MealPlanCard = ({ mealPlan }) => {
   // Placeholder: Destructure meal plan details as needed
   const { name, description, dishes } = mealPlan;
