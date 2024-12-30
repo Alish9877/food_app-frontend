@@ -1,6 +1,6 @@
 // Placeholder for imports
 import { Link } from 'react-router-dom';
-
+import "./Nav.css"
 const Nav = () => {
   return (
     <nav className="navbar">
