@@ -1,10 +1,24 @@
-// Placeholder for imports
+import React from "react";
+import { Link } from "react-router-dom";
+import '../index.css'
+
 const HomePage = () => {
-  // Placeholder: Add home page content
+
   return (
     <div className="home-page">
-      <h1>Welcome to the Food Subscription Service!</h1>
-      <p>Explore meal plans and start your journey to convenient dining.</p>
+      <p>Subscribe to Delicious Meals Today!</p>
+      <div className="home-buttons">
+        <button>
+          <Link to='/subscriptions'>
+          Subscription
+          </Link>
+        </button>
+        <button>
+          <Link to='/meal-plans'>
+          Meal Plans
+          </Link>
+        </button>
+      </div>
     </div>
   );
 };
