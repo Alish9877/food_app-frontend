@@ -1,4 +1,5 @@
 import React from "react";
+import './MealPlanCard.css';
 
 // Destructure the 'mealPlan' prop correctly
 const MealPlanCard = ({ mealPlan }) => {
@@ -14,3 +15,4 @@ const MealPlanCard = ({ mealPlan }) => {
 }
 
 export default MealPlanCard
+

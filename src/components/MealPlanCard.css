@@ -1,0 +1,132 @@
+/* General Body Styling */
+body {
+  background: linear-gradient(to right, #0a2b00, #196a00);
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center; /* Center content horizontally */
+  align-items: center; /* Center content vertically */
+}
+
+/* Meal Plans Container */
+.meal-plans-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap; /* Do not wrap, ensure cards are in a single horizontal line */
+  justify-content: flex-start;
+  gap: 20px;
+  padding: 20px;
+  overflow-x: auto; /* Allow scrolling horizontally if necessary */
+  height: 100%;
+  width: 90%; /* You can adjust the width as per your requirement */
+}
+
+/* Meal Plan Cards Styling */
+.meal-plan-card {
+  width: 280px;
+  padding: 20px;
+  margin: 15px;
+  background-color: #2d6a2f; /* New color similar to the gradient */
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.meal-plan-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.meal-plan-card h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #fff; /* White text for contrast */
+  text-align: center;
+}
+
+.meal-plan-card p {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  color: #f0f0f0; /* Light text color for better readability */
+}
+
+.meal-plan-card p strong {
+  color: #fff; /* White for strong text to maintain contrast */
+  font-weight: bold;
+}
+
+/* Navbar Styling */
+.navbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+  background: linear-gradient(to right, #0a2b00, #196a00);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* Container for Links */
+.nav-links {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+}
+
+.nav-links a {
+  font-size: 1.2rem;
+  color: #fff;
+  text-decoration: none;
+  padding: 10px;
+  transition: color 0.3s, border-bottom 0.3s;
+}
+
+/* Hover Effect: Orange Line Under the Nav Item */
+.nav-links a:hover {
+  color: #ffa500; /* Orange color on hover */
+  border-bottom: 2px solid #ffa500; /* Orange line below item */
+}
+
+/* Auth Links Section */
+.auth-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-left: auto; /* Align the auth links to the right */
+}
+
+.auth-links span {
+  font-size: 1.2rem;
+  color: #fff;
+}
+
+.auth-links button {
+  background-color: #ff4500;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.auth-links button:hover {
+  background-color: #ff6347;
+}
+
+.auth-links a {
+  color: #fff;
+  font-size: 1.2rem;
+  text-decoration: none;
+  padding: 10px;
+  transition: color 0.3s ease;
+}
+
+.auth-links a:hover {
+  color: #ffa500;
+}

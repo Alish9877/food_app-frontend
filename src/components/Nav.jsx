@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import './MealPlanCard.css'
 
 const Nav = ({ user, handleLogOut }) => {
   return (
@@ -30,3 +31,5 @@ const Nav = ({ user, handleLogOut }) => {
 }
 
 export default Nav
+
+
