@@ -1,18 +1,32 @@
-// Placeholder for imports
-import { Link } from 'react-router-dom';
-import "./Nav.css"
-const Nav = () => {
+import React from 'react'
+import { Link } from 'react-router-dom'
+
+const Nav = ({ user, handleLogOut }) => {
   return (
     <nav className="navbar">
-      <ul>
-        <li><Link to="/">Home</Link></li>
-        <li><Link to="/meal-plans">Meal Plans</Link></li>
-        <li><Link to="/subscriptions">Subscriptions</Link></li>
-        <li><Link to="/deliveries">Deliveries</Link></li>
-        <li><Link to="/auth/login">Login</Link></li>
-      </ul>
+      <div className="nav-links">
+        <Link to="/">Home</Link>
+        <Link to="/meal-plans">Meal Plans</Link>
+        {user && (
+          <>
+            <Link to="/subscriptions">Subscriptions</Link>
+            <Link to="/deliveries">Deliveries</Link>
+            {user.role === 'Admin' && <Link to="/admin">Admin Dashboard</Link>}
+          </>
+        )}
+      </div>
+      <div className="auth-links">
+        {user ? (
+          <>
+            <span>Welcome, {user.username}!</span>
+            <button onClick={handleLogOut}>Log Out</button>
+          </>
+        ) : (
+          <Link to="/auth/login">Login</Link>
+        )}
+      </div>
     </nav>
-  );
-};
+  )
+}
 
-export default Nav;
+export default Nav
