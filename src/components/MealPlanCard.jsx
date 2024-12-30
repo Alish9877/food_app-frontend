@@ -10,7 +10,7 @@ const MealPlanCard = ({ mealPlan }) => {
       <p><strong>Price:</strong> {mealPlan.Price}</p>
       <p><strong>Description:</strong> {mealPlan.Description}</p>
     </div>
-  );
-};
+  )
+}
 
-export default MealPlanCard;
+export default MealPlanCard

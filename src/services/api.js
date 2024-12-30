@@ -1,12 +1,11 @@
-import Axios from 'axios'
+import axios from 'axios'
 
-// Base URL for API requests
-export const BASE_URL = 'http://localhost:3001'
+// Create Axios instance with base URL
+const Client = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3001'
+})
 
-// Create Axios client instance with the base URL
-const Client = Axios.create({ baseURL: BASE_URL })
-
-// Add an interceptor to include JWT token in the Authorization header
+// Add token to headers if it exists in localStorage
 Client.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token')
@@ -15,7 +14,9 @@ Client.interceptors.request.use(
     }
     return config
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    return Promise.reject(error)
+  }
 )
 
 export default Client
