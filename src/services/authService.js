@@ -1,35 +1,45 @@
 import Client from './api'
 
-// Sign in a user and save the token in localStorage
-export const SignInUser = async (data) => {
+// Sign in user and save token
+export const signInUser = async (data) => {
   try {
     const res = await Client.post('/auth/login', data)
-    localStorage.setItem('token', res.data.token)
-    return res.data.user
+    const { token, user } = res.data
+    saveToken(token)
+    return user
   } catch (error) {
     console.error('Error signing in:', error)
-    throw error
+    throw error.response?.data || 'Error signing in'
   }
 }
 
 // Register a new user
-export const RegisterUser = async (data) => {
+export const registerUser = async (data) => {
   try {
     const res = await Client.post('/auth/register', data)
     return res.data
   } catch (error) {
     console.error('Error registering user:', error)
-    throw error
+    throw error.response?.data || 'Error registering user'
   }
 }
 
-// Check the current user session
-export const CheckSession = async () => {
+// Validate session
+export const checkSession = async () => {
   try {
     const res = await Client.get('/auth/session')
     return res.data
   } catch (error) {
     console.error('Error checking session:', error)
-    throw error
+    throw error.response?.data || 'Error checking session'
   }
 }
+
+// Token management
+export const saveToken = (token) => {
+  if (token) localStorage.setItem('token', token)
+}
+
+export const getToken = () => localStorage.getItem('token')
+
+export const removeToken = () => localStorage.removeItem('token')
