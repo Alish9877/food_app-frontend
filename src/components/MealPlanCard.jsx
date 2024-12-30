@@ -1,18 +1,14 @@
-// Placeholder for imports
+import React from "react";
 
+// Destructure the 'mealPlan' prop correctly
 const MealPlanCard = ({ mealPlan }) => {
-  // Placeholder: Destructure meal plan details as needed
-  const { name, description, dishes } = mealPlan;
-
   return (
     <div className="meal-plan-card">
-      <h2>{name}</h2>
-      <p>{description}</p>
-      <ul>
-        {dishes && dishes.map((dish, index) => (
-          <li key={index}>{dish}</li>
-        ))}
-      </ul>
+      <h2>{mealPlan.title}</h2>
+      <p><strong>Meal Per Day:</strong> {mealPlan.MealPerDay}</p>
+      <p><strong>Calories:</strong> {mealPlan.Calories}</p>
+      <p><strong>Price:</strong> {mealPlan.Price}</p>
+      <p><strong>Description:</strong> {mealPlan.Description}</p>
     </div>
   );
 };
