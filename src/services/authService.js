@@ -30,8 +30,9 @@ export const checkSession = async () => {
     const res = await Client.get('/auth/session')
     return res.data
   } catch (error) {
-    console.error('Error checking session:', error)
-    throw error.response?.data || 'Error checking session'
+    console.error('Invalid session:', error)
+    removeToken()
+    throw error
   }
 }
 

@@ -17,19 +17,21 @@ const App = () => {
   useEffect(() => {
     const restoreSession = async () => {
       try {
-        const restoredUser = await checkSession() // Restore user state
+        const restoredUser = await checkSession()
         setUser(restoredUser)
       } catch (error) {
         console.error('Session restoration failed:', error)
+        setUser(null)
+        localStorage.clear()
       }
     }
-
     restoreSession()
   }, [])
 
   const handleLogOut = () => {
     setUser(null)
-    localStorage.clear() // Clear token on logout
+    localStorage.removeItem('token')
+    navigate('/auth/login')
   }
 
   return (
