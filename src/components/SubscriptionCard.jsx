@@ -1,16 +1,13 @@
-import './SubscriptionCard.css';
-
 const SubscriptionCard = ({ subscription }) => {
-  const { strMeal: mealPlanName, strCategory, strArea, strMealThumb: image } = subscription;
-
+  const { mealPlanName, startDate, duration, mealsPerDay, price } = subscription
   return (
     <div className="subscription-card">
       <h3>Meal Plan: {mealPlanName}</h3>
-      <img src={image} alt={mealPlanName} />
-      <p>Category: {strCategory}</p>
-      <p>Area: {strArea}</p>
+      <p>Start Date: {new Date(startDate).toLocaleDateString()}</p>
+      <p>Duration: {duration} months</p>
+      <p>Meals Per Day: {mealsPerDay}</p>
+      <p>Price: ${price.toFixed(2)}</p>
     </div>
-  );
-};
-
-export default SubscriptionCard;
+  )
+}
+export default SubscriptionCard
