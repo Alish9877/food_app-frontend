@@ -1,5 +1,4 @@
 
-
 const SubscriptionCard = ({ subscription }) => {
   const { mealPlanName, startDate, duration, mealsPerDay, price } = subscription
 

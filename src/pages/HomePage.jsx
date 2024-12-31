@@ -10,6 +10,8 @@ const HomePage = ({user}) => {
           Explore meal plans, manage subscriptions, and track your deliveries
           effortlessly!
         </p>
+        <button Link to='/auth/register'>Register</button>
+        <button Link to='/auth/login'>Login</button>
       </header>
       {user && (
       <div className="home-actions">
