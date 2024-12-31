@@ -7,9 +7,10 @@ const Nav = ({ user, handleLogOut }) => {
     <nav className="navbar">
       <div className="nav-links">
         <Link to="/">Home</Link>
-        <Link to="/meal-plans">Meal Plans</Link>
+        
         {user && (
           <>
+          <Link to="/meal-plans">Meal Plans</Link>
             <Link to="/subscriptions">Subscriptions</Link>
             <Link to="/deliveries">Deliveries</Link>
             {user.role === 'Admin' && <Link to="/admin">Admin Dashboard</Link>}
