@@ -43,3 +43,25 @@ export const saveToken = (token) => {
 export const getToken = () => localStorage.getItem('token')
 
 export const removeToken = () => localStorage.removeItem('token')
+
+// Update User Profile (Username)
+export const updateUserProfile = async (userId, data) => {
+  try {
+    const res = await Client.put(`/users/${userId}`, data)
+    return res.data
+  } catch (error) {
+    console.error('Error updating user profile:', error)
+    throw error.response?.data || 'Error updating user profile'
+  }
+}
+
+// Update User Password
+export const updateUserPassword = async (userId, data) => {
+  try {
+    const res = await Client.put(`/auth/update/${userId}`, data)
+    return res.data
+  } catch (error) {
+    console.error('Error updating user password:', error)
+    throw error.response?.data || 'Error updating user password'
+  }
+}
