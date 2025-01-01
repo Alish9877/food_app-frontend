@@ -47,7 +47,10 @@ const App = () => {
               path="/auth/register"
               element={<AuthPage setUser={setUser} />}
             />
-            <Route path="/account-settings" element={<AccountSettingsPage />} />
+            <Route
+              path="/account-settings"
+              element={<AccountSettingsPage user={user} setUser={setUser} />}
+            />
             <Route
               path="/admin"
               element={user?.role === 'Admin' ? <AdminPage /> : <HomePage />}
@@ -63,3 +66,4 @@ const App = () => {
 }
 
 export default App
+
