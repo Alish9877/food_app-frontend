@@ -27,6 +27,11 @@ export const registerUser = async (data) => {
 // Validate session
 export const checkSession = async () => {
   try {
+    const token = getToken()
+    if (!token) {
+      console.warn('No token found. Skipping session validation.')
+      return null
+    }
     const res = await Client.get('/auth/session')
     return res.data
   } catch (error) {
