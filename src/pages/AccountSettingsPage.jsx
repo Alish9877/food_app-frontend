@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import  { useState } from 'react'
 import { updateUserProfile, updateUserPassword } from '../services/authService'
 
 const AccountSettingsPage = ({ user, setUser }) => {

@@ -1,18 +1,23 @@
-import React from "react";
 import './MealPlanCard.css';
 
-// Destructure the 'mealPlan' prop correctly
-const MealPlanCard = ({ mealPlan }) => {
+const MealPlanCard = ({ mealPlan, isSelected, handleAddMeal }) => {
+  const { strMeal: mealPlanName, strCategory, strArea, strMealThumb: image, price } = mealPlan;
+
   return (
     <div className="meal-plan-card">
-      <h2>{mealPlan.title}</h2>
-      <p><strong>Meal Per Day:</strong> {mealPlan.MealPerDay}</p>
-      <p><strong>Calories:</strong> {mealPlan.Calories}</p>
-      <p><strong>Price:</strong> {mealPlan.Price}</p>
-      <p><strong>Description:</strong> {mealPlan.Description}</p>
+      <h3>Meal Plan: {mealPlanName}</h3>
+      <img src={image} alt={mealPlanName} />
+      <p>Category: {strCategory}</p>
+      <p>Area: {strArea}</p>
+      <p>Price: ${price}</p>
+      <button
+        className={`add-button ${isSelected ? 'selected' : ''}`}
+        onClick={() => handleAddMeal(mealPlan)}
+      >
+        {isSelected ? 'Remove' : 'Add'}
+      </button>
     </div>
-  )
-}
+  );
+};
 
-export default MealPlanCard
-
+export default MealPlanCard;

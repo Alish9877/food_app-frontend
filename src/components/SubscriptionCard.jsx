@@ -1,6 +1,5 @@
-
-const SubscriptionCard = ({ subscription }) => {
-  const { mealPlanName, startDate, duration, mealsPerDay, price } = subscription
+const SubscriptionCard = ({ subscription, selectedMeals }) => {
+  const { mealPlanName, startDate, duration, mealsPerDay, price } = subscription;
 
   return (
     <div className="subscription-card">
@@ -9,8 +8,14 @@ const SubscriptionCard = ({ subscription }) => {
       <p>Duration: {duration} months</p>
       <p>Meals Per Day: {mealsPerDay}</p>
       <p>Price: ${price.toFixed(2)}</p>
+      <h4>Selected Meals:</h4>
+      <ul>
+        {selectedMeals.map((meal, index) => (
+          <li key={index}>{meal}</li>
+        ))}
+      </ul>
     </div>
-  )
-}
+  );
+};
 
-export default SubscriptionCard
+export default SubscriptionCard;

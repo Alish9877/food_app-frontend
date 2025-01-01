@@ -1,6 +1,5 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
-
+import "./HomePage.css"
 const HomePage = ({user}) => {
   return (
     <div className="home-page">
@@ -30,7 +29,7 @@ const HomePage = ({user}) => {
         <p>&copy; {new Date().getFullYear()} Food App. All rights reserved.</p>
       </footer>
     </div>
-  )
-}
+  );
+};
 
 export default HomePage

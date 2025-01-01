@@ -36,3 +36,62 @@
   max-width: 100%;
   height: auto;
 }
+
+.meal-plan-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  padding: 20px;
+  width: 300px;
+  transition: transform 0.2s;
+}
+
+.meal-plan-card:hover {
+  transform: scale(1.05);
+}
+
+.meal-plan-card img {
+  border-radius: 8px;
+  max-width: 100%;
+  height: auto;
+}
+
+.meal-plan-card h3 {
+  font-size: 1.5em;
+  margin: 10px 0;
+  color: #333;
+}
+
+.meal-plan-card p {
+  font-size: 1em;
+  color: #666;
+}
+
+.add-button {
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 1em;
+  margin-top: 10px;
+  transition: background-color 0.3s;
+}
+
+.add-button.selected {
+  background-color: #FF6347;
+}
+
+.add-button:hover {
+  background-color: #45a049;
+}
+
+.add-button.selected:hover {
+  background-color: #FF4500;
+}
