@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
-import MealPlansCRUD from '../components/MealPlansCRUD'
-import SubscriptionsCRUD from '../components/SubscriptionsCRUD'
-import DeliveriesCRUD from '../components/DeliveriesCRUD'
+import { useState, lazy, Suspense } from 'react'
+
+const MealPlansCRUD = lazy(() => import('../components/MealPlansCRUD'))
+const SubscriptionsCRUD = lazy(() => import('../components/SubscriptionsCRUD'))
+const DeliveriesCRUD = lazy(() => import('../components/DeliveriesCRUD'))
 
 const AdminPage = () => {
   const [activeSection, setActiveSection] = useState('mealPlans')
@@ -12,21 +13,32 @@ const AdminPage = () => {
       <p>Access tools to manage meal plans, subscriptions, and deliveries.</p>
 
       <div className="admin-tabs">
-        <button onClick={() => setActiveSection('mealPlans')}>
+        <button
+          className={activeSection === 'mealPlans' ? 'active' : ''}
+          onClick={() => setActiveSection('mealPlans')}
+        >
           Meal Plans
         </button>
-        <button onClick={() => setActiveSection('subscriptions')}>
+        <button
+          className={activeSection === 'subscriptions' ? 'active' : ''}
+          onClick={() => setActiveSection('subscriptions')}
+        >
           Subscriptions
         </button>
-        <button onClick={() => setActiveSection('deliveries')}>
+        <button
+          className={activeSection === 'deliveries' ? 'active' : ''}
+          onClick={() => setActiveSection('deliveries')}
+        >
           Deliveries
         </button>
       </div>
 
       <div className="admin-section">
-        {activeSection === 'mealPlans' && <MealPlansCRUD />}
-        {activeSection === 'subscriptions' && <SubscriptionsCRUD />}
-        {activeSection === 'deliveries' && <DeliveriesCRUD />}
+        <Suspense fallback={<p>Loading...</p>}>
+          {activeSection === 'mealPlans' && <MealPlansCRUD />}
+          {activeSection === 'subscriptions' && <SubscriptionsCRUD />}
+          {activeSection === 'deliveries' && <DeliveriesCRUD />}
+        </Suspense>
       </div>
     </div>
   )

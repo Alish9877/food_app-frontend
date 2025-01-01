@@ -10,7 +10,7 @@ const MealPlanCard = ({ mealPlan, isSelected, handleAddMeal }) => {
   } = mealPlan
 
   return (
-    <div className="meal-plan-card">
+    <div className={`meal-plan-card ${isSelected ? 'selected' : ''}`}>
       <h3>Meal Plan: {mealPlanName}</h3>
       <img src={image} alt={mealPlanName} />
       <p>Category: {strCategory}</p>
@@ -19,7 +19,6 @@ const MealPlanCard = ({ mealPlan, isSelected, handleAddMeal }) => {
       <button
         className={`add-button ${isSelected ? 'selected' : ''}`}
         onClick={() => handleAddMeal(mealPlan)}
-        disabled={!isUserAuthorized}
       >
         {isSelected ? 'Remove' : 'Add'}
       </button>

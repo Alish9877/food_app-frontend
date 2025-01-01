@@ -12,34 +12,56 @@ import SubscriptionPage from './pages/SubscriptionPage'
 import './App.css'
 
 const App = () => {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem('user')
+    return storedUser ? JSON.parse(storedUser) : null
+  })
   const navigate = useNavigate()
 
+  // Restore user session on app load
   useEffect(() => {
     const restoreSession = async () => {
       try {
         const token = localStorage.getItem('token')
         if (!token) {
-          console.log('No token found. Redirecting to login.')
-          navigate('/auth/login')
+          console.log('No token found. User not logged in.')
+          setUser(null)
           return
         }
         const restoredUser = await checkSession()
         setUser(restoredUser)
+        localStorage.setItem('user', JSON.stringify(restoredUser))
       } catch (error) {
         console.error('Session restoration failed:', error)
         setUser(null)
         localStorage.clear()
-        navigate('/auth/login')
       }
     }
     restoreSession()
-  }, [navigate])
+  }, [])
 
   const handleLogOut = () => {
     setUser(null)
-    localStorage.removeItem('token')
+    localStorage.clear()
     navigate('/auth/login')
+  }
+
+  const ProtectedRoute = ({ component }) => {
+    useEffect(() => {
+      if (!user) {
+        navigate('/auth/login')
+      }
+    }, [user, navigate])
+
+    return user ? component : null
+  }
+
+  const AdminRoute = ({ component }) => {
+    if (!user || user.role !== 'Admin') {
+      navigate('/')
+      return null
+    }
+    return component
   }
 
   return (
@@ -47,23 +69,49 @@ const App = () => {
       <Nav user={user} handleLogOut={handleLogOut} />
       <main className="main-content">
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          {/* Public Routes */}
+          <Route path="/" element={<HomePage user={user} />} />
           <Route path="/auth/login" element={<AuthPage setUser={setUser} />} />
           <Route
             path="/auth/register"
             element={<AuthPage setUser={setUser} />}
           />
+
+          {/* Protected Routes */}
           <Route
             path="/account-settings"
-            element={<AccountSettingsPage user={user} setUser={setUser} />}
+            element={
+              <ProtectedRoute
+                component={
+                  <AccountSettingsPage user={user} setUser={setUser} />
+                }
+              />
+            }
           />
           <Route
-            path="/admin"
-            element={user?.role === 'Admin' ? <AdminPage /> : <HomePage />}
+            path="/deliveries"
+            element={
+              <ProtectedRoute component={<DeliveryPage user={user} />} />
+            }
           />
-          <Route path="/deliveries" element={<DeliveryPage />} />
-          <Route path="/meal-plans" element={<MealPlansPage />} />
-          <Route path="/subscriptions" element={<SubscriptionPage />} />
+          <Route
+            path="/meal-plans"
+            element={
+              <ProtectedRoute component={<MealPlansPage user={user} />} />
+            }
+          />
+          <Route
+            path="/subscriptions"
+            element={
+              <ProtectedRoute component={<SubscriptionPage user={user} />} />
+            }
+          />
+
+          {/* Admin Route */}
+          <Route
+            path="/admin"
+            element={<AdminRoute component={<AdminPage />} />}
+          />
         </Routes>
       </main>
     </div>

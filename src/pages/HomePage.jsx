@@ -10,28 +10,29 @@ const HomePage = ({ user }) => {
           Explore meal plans, manage subscriptions, and track your deliveries
           effortlessly!
         </p>
-        <div className="auth-buttons">
-          <Link to="/auth/register" className="home-button">
-            Register
-          </Link>
-          <Link to="/auth/login" className="home-button">
-            Login
-          </Link>
-        </div>
+        {!user ? (
+          <div className="auth-buttons">
+            <Link to="/auth/register" className="home-button">
+              Register
+            </Link>
+            <Link to="/auth/login" className="home-button">
+              Login
+            </Link>
+          </div>
+        ) : (
+          <div className="home-actions">
+            <Link to="/meal-plans" className="home-button">
+              View Meal Plans
+            </Link>
+            <Link to="/subscriptions" className="home-button">
+              Manage Subscriptions
+            </Link>
+            <Link to="/deliveries" className="home-button">
+              Track Deliveries
+            </Link>
+          </div>
+        )}
       </header>
-      {user && (
-        <div className="home-actions">
-          <Link to="/meal-plans" className="home-button">
-            View Meal Plans
-          </Link>
-          <Link to="/subscriptions" className="home-button">
-            Manage Subscriptions
-          </Link>
-          <Link to="/deliveries" className="home-button">
-            Track Deliveries
-          </Link>
-        </div>
-      )}
       <footer className="home-footer">
         <p>&copy; {new Date().getFullYear()} Food App. All rights reserved.</p>
       </footer>
