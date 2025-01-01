@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import SubscriptionCard from '../components/SubscriptionCard';
-
+import "./SubscriptionPage.css"
 const SubscriptionPage = () => {
   const [selectedDays, setSelectedDays] = useState([]);
   const [startingDay, setStartingDay] = useState("");
@@ -35,10 +35,10 @@ const SubscriptionPage = () => {
     e.preventDefault();
 
     const subscriptionData = {
-      selectedDays,
       startingDay,
       deliveryTime,
       selectedMeals,
+      totalPrice: selectedMeals.length * 10, // Example price calculation
     };
 
     navigate('/deliveries', { state: { subscriptionData } });

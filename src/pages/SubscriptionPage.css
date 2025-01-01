@@ -1,0 +1,93 @@
+.subscription-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 16px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.subscription-page h1 {
+  text-align: center;
+  color: #333;
+}
+
+.subscription-page h3 {
+  margin-top: 24px;
+  color: #333;
+}
+
+.subscription-page .filter-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.subscription-page .filter-container label {
+  display: flex;
+  align-items: center;
+  background-color: #e0e0e0;
+  padding: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.subscription-page .filter-container input {
+  margin-right: 8px;
+}
+
+.subscription-page input[type="date"] {
+  width: 100%;
+  padding: 8px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.subscription-page button {
+  background-color: #f8fcf7;
+  color: rgb(8, 7, 7);
+  border: none;
+  border-radius: 4px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+
+.subscription-page p {
+  color: #666;
+  text-align: center;
+}
+
+.subscription-page .subscription-card {
+  margin-top: 24px;
+  padding: 16px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.subscription-page .subscription-card h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.subscription-page .subscription-card p {
+  margin: 8px 0;
+  color: #666;
+}
+
+.subscription-page .subscription-card ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 8px 0;
+}
+
+.subscription-page .subscription-card ul li {
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  padding: 8px;
+  margin: 4px 0;
+}

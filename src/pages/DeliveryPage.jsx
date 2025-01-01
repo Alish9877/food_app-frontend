@@ -5,31 +5,18 @@ import './DeliveryPage.css';
 
 const DeliveryPage = () => {
   const location = useLocation();
-  const [deliveries, setDeliveries] = useState([
-    {
-      id: 1,
-      deliveryDate: '2023-12-31',
-      status: 'Pending',
-      meals: ['Meal 1', 'Meal 2', 'Meal 3'],
-    },
-    {
-      id: 2,
-      deliveryDate: '2024-01-01',
-      status: 'Delivered',
-      meals: ['Meal A', 'Meal B', 'Meal C'],
-    },
-  ]);
-  const [selectedMeals, setSelectedMeals] = useState([]);
+  const [deliveries, setDeliveries] = useState([]);
 
   useEffect(() => {
     if (location.state && location.state.subscriptionData) {
-      const { selectedDays, startingDay, deliveryTime, selectedMeals } = location.state.subscriptionData;
-      setSelectedMeals(selectedMeals);
+      const { startingDay, deliveryTime, selectedMeals, totalPrice } = location.state.subscriptionData;
       const newDelivery = {
         id: deliveries.length + 1,
         deliveryDate: startingDay,
+        deliveryTime,
         status: 'Pending',
         meals: selectedMeals,
+        totalPrice,
       };
       setDeliveries([...deliveries, newDelivery]);
     }
@@ -54,7 +41,6 @@ const DeliveryPage = () => {
             key={delivery.id}
             delivery={delivery}
             handleSave={handleSave}
-            selectedMeals={selectedMeals}
           />
         ))}
       </div>
