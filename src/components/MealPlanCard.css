@@ -29,3 +29,30 @@
   font-size: 1em;
   color: #666;
 }
+
+.add-button {
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 1em;
+  margin-top: 10px;
+  transition: background-color 0.3s;
+}
+
+.add-button.selected {
+  background-color: #FF6347;
+}
+
+.add-button:hover {
+  background-color: #45a049;
+}
+
+.add-button.selected:hover {
+  background-color: #FF4500;
+}

@@ -7,6 +7,7 @@ const MealPlansPage = () => {
   const [mealPlans, setMealPlans] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedMeals, setSelectedMeals] = useState([]);
 
   useEffect(() => {
     fetchMealPlans();
@@ -19,22 +20,22 @@ const MealPlansPage = () => {
         let price;
         switch (meal.strCategory) {
           case 'Seafood':
-            price = 20;
+            price = 69;
             break;
           case 'Beef':
-            price = 15;
+            price = 50;
             break;
           case 'Chicken':
-            price = 12;
+            price = 30;
             break;
           case 'Vegetarian':
-            price = 10;
+            price = 25;
             break;
           case 'Dessert':
-            price = 8;
+            price = 22;
             break;
           default:
-            price = 5;
+            price = 10;
         }
         return { ...meal, price };
       });
@@ -53,6 +54,14 @@ const MealPlansPage = () => {
         ? prevSelected.filter((c) => c !== category)
         : [...prevSelected, category]
     );
+  };
+
+  const handleAddMeal = (meal) => {
+    if (selectedMeals.includes(meal.idMeal)) {
+      setSelectedMeals(selectedMeals.filter((id) => id !== meal.idMeal));
+    } else if (selectedMeals.length < 3) {
+      setSelectedMeals([...selectedMeals, meal.idMeal]);
+    }
   };
 
   const filteredMealPlans = selectedCategories.length
@@ -76,7 +85,12 @@ const MealPlansPage = () => {
       </div>
       <div className="meal-plan-container">
         {filteredMealPlans.map((mealPlan) => (
-          <MealPlanCard key={mealPlan.idMeal} mealPlan={mealPlan} />
+          <MealPlanCard
+            key={mealPlan.idMeal}
+            mealPlan={mealPlan}
+            isSelected={selectedMeals.includes(mealPlan.idMeal)}
+            handleAddMeal={handleAddMeal}
+          />
         ))}
       </div>
     </div>

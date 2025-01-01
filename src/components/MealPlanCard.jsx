@@ -1,7 +1,6 @@
-import React from 'react';
 import './MealPlanCard.css';
 
-const MealPlanCard = ({ mealPlan }) => {
+const MealPlanCard = ({ mealPlan, isSelected, handleAddMeal }) => {
   const { strMeal: mealPlanName, strCategory, strArea, strMealThumb: image, price } = mealPlan;
 
   return (
@@ -11,6 +10,12 @@ const MealPlanCard = ({ mealPlan }) => {
       <p>Category: {strCategory}</p>
       <p>Area: {strArea}</p>
       <p>Price: ${price}</p>
+      <button
+        className={`add-button ${isSelected ? 'selected' : ''}`}
+        onClick={() => handleAddMeal(mealPlan)}
+      >
+        {isSelected ? 'Remove' : 'Add'}
+      </button>
     </div>
   );
 };
