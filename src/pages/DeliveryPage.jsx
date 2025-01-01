@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
-import DeliveryCard from '../components/DeliveryCard'; // Updated import statement
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import DeliveryCard from '../components/DeliveryCard';
 import './DeliveryPage.css';
 
 const DeliveryPage = () => {
+  const location = useLocation();
   const [deliveries, setDeliveries] = useState([
     {
       id: 1,
@@ -17,6 +19,21 @@ const DeliveryPage = () => {
       meals: ['Meal A', 'Meal B', 'Meal C'],
     },
   ]);
+  const [selectedMeals, setSelectedMeals] = useState([]);
+
+  useEffect(() => {
+    if (location.state && location.state.subscriptionData) {
+      const { selectedDays, startingDay, deliveryTime, selectedMeals } = location.state.subscriptionData;
+      setSelectedMeals(selectedMeals);
+      const newDelivery = {
+        id: deliveries.length + 1,
+        deliveryDate: startingDay,
+        status: 'Pending',
+        meals: selectedMeals,
+      };
+      setDeliveries([...deliveries, newDelivery]);
+    }
+  }, [location.state]);
 
   const handleSave = (updatedDelivery) => {
     setDeliveries((prevDeliveries) =>
@@ -33,7 +50,12 @@ const DeliveryPage = () => {
       <p>Track your meal deliveries here.</p>
       <div className="delivery-container">
         {deliveries && deliveries.map((delivery) => (
-          <DeliveryCard key={delivery.id} delivery={delivery} handleSave={handleSave} />
+          <DeliveryCard
+            key={delivery.id}
+            delivery={delivery}
+            handleSave={handleSave}
+            selectedMeals={selectedMeals}
+          />
         ))}
       </div>
     </div>

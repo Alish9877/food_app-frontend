@@ -1,9 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import SubscriptionCard from '../components/SubscriptionCard';
 
 const SubscriptionPage = () => {
   const [selectedDays, setSelectedDays] = useState([]);
   const [startingDay, setStartingDay] = useState("");
   const [deliveryTime, setDeliveryTime] = useState("");
+  const [selectedMeals, setSelectedMeals] = useState([]);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const meals = queryParams.getAll('meal');
+    setSelectedMeals(meals);
+  }, [location]);
 
   // handle day selection
   const handleDayChange = (day) => {
@@ -20,35 +31,17 @@ const SubscriptionPage = () => {
   };
 
   // handle form submission
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     const subscriptionData = {
       selectedDays,
       startingDay,
       deliveryTime,
+      selectedMeals,
     };
 
-    try {
-      const response = await fetch("/api/subscribe", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(subscriptionData),
-      });
-
-      if (response.ok) {
-        // Handle success, like redirecting the user
-        alert("Subscription successful!");
-      } else {
-        // Handle error
-        alert("Subscription failed. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("An error occurred. Please try again.");
-    }
+    navigate('/deliveries', { state: { subscriptionData } });
   };
 
   return (
@@ -83,7 +76,19 @@ const SubscriptionPage = () => {
       </button>
 
       <p>You can always skip a day or make changes from your settings.</p>
+
+      <SubscriptionCard
+        subscription={{
+          mealPlanName: "Your Selected Meal Plan",
+          startDate: startingDay,
+          duration: 1, // Example duration
+          mealsPerDay: selectedMeals.length,
+          price: selectedMeals.length * 10, // Example price calculation
+        }}
+        selectedMeals={selectedMeals}
+      />
     </div>
   );
 };
+
 export default SubscriptionPage;

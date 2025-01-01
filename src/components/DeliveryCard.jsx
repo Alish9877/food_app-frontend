@@ -1,12 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './DeliveryCard.css';
 
-const DeliveryCard = ({ delivery, handleSave }) => {
-  const { deliveryDate, status, meals } = delivery;
+const DeliveryCard = ({ delivery, handleSave, selectedMeals }) => {
+  const { deliveryDate, status } = delivery;
   const [building, setBuilding] = useState('');
   const [block, setBlock] = useState('');
   const [street, setStreet] = useState('');
   const [flat, setFlat] = useState('');
+
+  useEffect(() => {
+    if (selectedMeals) {
+      delivery.meals = selectedMeals;
+    }
+  }, [selectedMeals]);
 
   const handleSaveClick = () => {
     const updatedDelivery = {
@@ -24,7 +30,7 @@ const DeliveryCard = ({ delivery, handleSave }) => {
       <h3>Delivery Date: {new Date(deliveryDate).toLocaleDateString()}</h3>
       <p>Status: {status}</p>
       <ul>
-        {meals && meals.map((meal, index) => <li key={index}>{meal}</li>)}
+        {delivery.meals && delivery.meals.map((meal, index) => <li key={index}>{meal}</li>)}
       </ul>
       <div className="optional-fields">
         <input

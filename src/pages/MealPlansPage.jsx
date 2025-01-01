@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import MealPlanCard from '../components/MealPlanCard'; 
 import './MealPlansPage.css';
 
@@ -8,6 +9,7 @@ const MealPlansPage = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedMeals, setSelectedMeals] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchMealPlans();
@@ -64,6 +66,12 @@ const MealPlansPage = () => {
     }
   };
 
+  const handleComplete = () => {
+    const selectedMealPlans = mealPlans.filter(meal => selectedMeals.includes(meal.idMeal));
+    const queryString = selectedMealPlans.map(meal => `meal=${encodeURIComponent(meal.strMeal)}`).join('&');
+    navigate(`/subscriptions?${queryString}`);
+  };
+
   const filteredMealPlans = selectedCategories.length
     ? mealPlans.filter((meal) => selectedCategories.includes(meal.strCategory))
     : mealPlans;
@@ -83,6 +91,11 @@ const MealPlansPage = () => {
           </label>
         ))}
       </div>
+      {selectedMeals.length > 0 && (
+        <button className="complete-button" onClick={handleComplete}>
+          Complete
+        </button>
+      )}
       <div className="meal-plan-container">
         {filteredMealPlans.map((mealPlan) => (
           <MealPlanCard
