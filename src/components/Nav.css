@@ -1,31 +1,70 @@
-body,
-ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-} 
 .navbar {
-  background-color: #5abc3c;
-  overflow: hidden;
-} 
-.navbar ul {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
-  padding: 0;
-  margin: 0;
+  padding: 20px 0;
+  background: linear-gradient(to right, #0a2b00, #196a00);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
-.navbar li {
-  display: inline;
+
+/* Container for Links */
+.nav-links {
+  display: flex;
+  gap: 30px;
+  align-items: center;
 }
-.navbar a {
-  display: block;
-  color: rgb(18, 10, 10);
-  text-align: center;
-  padding: 14px 20px;
+
+.nav-links a {
+  font-size: 1.2rem;
+  color: #fff;
   text-decoration: none;
-} 
-.navbar a:hover {
-  background-color: #ddd;
-  color: black;
+  padding: 10px;
+  transition: color 0.3s, border-bottom 0.3s;
+}
+
+/* Hover Effect: Orange Line Under the Nav Item */
+.nav-links a:hover {
+  color: #ffa500; /* Orange color on hover */
+  border-bottom: 2px solid #ffa500; /* Orange line below item */
+}
+
+/* Auth Links Section */
+.auth-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-left: auto; /* Align the auth links to the right */
+}
+
+.auth-links span {
+  font-size: 1.2rem;
+  color: #fff;
+}
+
+.auth-links button {
+  background-color: #ff4500;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.auth-links button:hover {
+  background-color: #ff6347;
+}
+
+.auth-links a {
+  color: #fff;
+  font-size: 1.2rem;
+  text-decoration: none;
+  padding: 10px;
+  transition: color 0.3s ease;
+}
+
+.auth-links a:hover {
+  color: #ffa500;
 }
