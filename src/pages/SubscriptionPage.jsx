@@ -1,8 +1,6 @@
-// SubscriptionPage.jsx
-
 import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import { createSubscription } from '../services/subscriptionService'
 import SubscriptionCard from '../components/SubscriptionCard'
 import './SubscriptionPage.css'
 
@@ -18,6 +16,7 @@ const SubscriptionPage = () => {
   const location = useLocation()
   const navigate = useNavigate()
 
+  // Extract mealPlans and backendMealPlans from location.state
   const { mealPlans = [], backendMealPlans = [] } = location.state || {}
 
   useEffect(() => {
@@ -49,6 +48,15 @@ const SubscriptionPage = () => {
 
   const totalPrice = calculateTotalPrice()
 
+  const handleMealsPerDayChange = (e) => {
+    const selectedCount = Number(e.target.value)
+    setMealsPerDay(selectedCount)
+
+    if (selectedMeals.length > selectedCount) {
+      setSelectedMeals(selectedMeals.slice(0, selectedCount))
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
 
@@ -75,33 +83,16 @@ const SubscriptionPage = () => {
     }
 
     try {
-      const token = localStorage.getItem('token')
-      if (!token) {
-        setError('You must be logged in to perform this action.')
-        return
-      }
-
-      const response = await axios.post(
-        'http://localhost:3001/subscriptions',
-        subscriptionData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      )
-
+      const response = await createSubscription(subscriptionData)
       setSuccessMessage('Subscription saved successfully!')
-      console.log('Saved subscription:', response.data)
-
+      console.log('Saved subscription:', response)
       setTimeout(() => {
         navigate('/deliveries', { state: { subscriptionData } })
       }, 2000)
     } catch (error) {
-      console.error('Error saving subscription:', error.response?.data || error)
+      console.error('Error saving subscription:', error.message || error)
       setError(
-        error.response?.data?.message ||
-          'Failed to save subscription. Please try again later.'
+        error.message || 'Failed to save subscription. Please try again later.'
       )
     }
   }
@@ -143,6 +134,7 @@ const SubscriptionPage = () => {
         type="date"
         value={startingDay}
         onChange={(e) => setStartingDay(e.target.value)}
+        required
       />
 
       <h3>Duration</h3>
@@ -165,7 +157,7 @@ const SubscriptionPage = () => {
         name="mealsPerDay"
         id="mealsPerDay"
         value={mealsPerDay}
-        onChange={(e) => setMealsPerDay(e.target.value)}
+        onChange={handleMealsPerDayChange}
         required
       >
         <option value="">Select Meals Per Day</option>
@@ -177,6 +169,7 @@ const SubscriptionPage = () => {
       <h3>Delivery Time</h3>
       <div className="time-selector">
         <button
+          type="button"
           className={deliveryTime === '7AM to 11AM (Morning)' ? 'selected' : ''}
           onClick={() => setDeliveryTime('7AM to 11AM (Morning)')}
         >
@@ -188,6 +181,7 @@ const SubscriptionPage = () => {
           7AM to 11AM (Morning)
         </button>
         <button
+          type="button"
           className={
             deliveryTime === '6PM to 10PM (Night before)' ? 'selected' : ''
           }
