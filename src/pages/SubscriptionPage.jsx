@@ -1,3 +1,5 @@
+// SubscriptionPage.jsx
+
 import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import axios from 'axios'
@@ -8,13 +10,14 @@ const SubscriptionPage = () => {
   const [selectedDays, setSelectedDays] = useState([])
   const [startingDay, setStartingDay] = useState('')
   const [deliveryTime, setDeliveryTime] = useState('')
+  const [duration, setDuration] = useState('')
+  const [mealsPerDay, setMealsPerDay] = useState('')
   const [selectedMeals, setSelectedMeals] = useState([])
   const [error, setError] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
   const location = useLocation()
   const navigate = useNavigate()
 
-  // Extract mealPlans and backendMealPlans from location.state
   const { mealPlans = [], backendMealPlans = [] } = location.state || {}
 
   useEffect(() => {
@@ -44,54 +47,64 @@ const SubscriptionPage = () => {
     return selectedMealPlans.reduce((sum, meal) => sum + (meal.price || 0), 0)
   }
 
+  const totalPrice = calculateTotalPrice()
+
   const handleSubmit = async (e) => {
-    e.preventDefault();
-  
+    e.preventDefault()
+
     if (
       !startingDay ||
       !deliveryTime ||
+      !duration ||
+      !mealsPerDay ||
       selectedDays.length === 0 ||
       selectedMeals.length === 0
     ) {
-      setError('Please fill all required fields.');
-      return;
+      setError('Please fill all required fields.')
+      return
     }
-  
-    const totalPrice = calculateTotalPrice();
-  
+
     const subscriptionData = {
       startingDay,
       deliveryTime,
+      duration: Number(duration),
+      mealsPerDay: Number(mealsPerDay),
       selectedDays,
       selectedMeals,
-      totalPrice,
-    };
-  
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        setError('You must be logged in to perform this action.');
-        return;
-      }
-  
-      const response = await axios.post('http://localhost:3001/subscriptions', subscriptionData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-  
-      setSuccessMessage('Subscription saved successfully!');
-      console.log('Saved subscription:', response.data);
-  
-      setTimeout(() => {
-        navigate('/deliveries', { state: { subscriptionData } });
-      }, 2000);
-    } catch (error) {
-      console.error('Error saving subscription:', error);
-      setError('Failed to save subscription. Please try again later.');
+      totalPrice
     }
-  };
-  
+
+    try {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        setError('You must be logged in to perform this action.')
+        return
+      }
+
+      const response = await axios.post(
+        'http://localhost:3001/subscriptions',
+        subscriptionData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      )
+
+      setSuccessMessage('Subscription saved successfully!')
+      console.log('Saved subscription:', response.data)
+
+      setTimeout(() => {
+        navigate('/deliveries', { state: { subscriptionData } })
+      }, 2000)
+    } catch (error) {
+      console.error('Error saving subscription:', error.response?.data || error)
+      setError(
+        error.response?.data?.message ||
+          'Failed to save subscription. Please try again later.'
+      )
+    }
+  }
 
   return (
     <div className="subscription-page">
@@ -132,6 +145,35 @@ const SubscriptionPage = () => {
         onChange={(e) => setStartingDay(e.target.value)}
       />
 
+      <h3>Duration</h3>
+      <select
+        name="duration"
+        id="duration"
+        value={duration}
+        onChange={(e) => setDuration(e.target.value)}
+        required
+      >
+        <option value="">Select Duration</option>
+        <option value="1">1 month</option>
+        <option value="2">2 months</option>
+        <option value="3">3 months</option>
+        <option value="6">6 months</option>
+      </select>
+
+      <h3>Meals Per Day</h3>
+      <select
+        name="mealsPerDay"
+        id="mealsPerDay"
+        value={mealsPerDay}
+        onChange={(e) => setMealsPerDay(e.target.value)}
+        required
+      >
+        <option value="">Select Meals Per Day</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+      </select>
+
       <h3>Delivery Time</h3>
       <div className="time-selector">
         <button
@@ -166,9 +208,9 @@ const SubscriptionPage = () => {
         subscription={{
           mealPlanName: 'Your Selected Meal Plan',
           startDate: startingDay,
-          duration: 1,
-          mealsPerDay: selectedMeals.length,
-          price: calculateTotalPrice()
+          duration: duration,
+          mealsPerDay: mealsPerDay,
+          price: totalPrice
         }}
         selectedMeals={selectedMeals}
       />

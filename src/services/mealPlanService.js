@@ -73,6 +73,13 @@ export const deleteMealPlan = async (mealPlanId) => {
 }
 
 export const importExternalMealPlan = async (externalMeal) => {
-  const res = await Client.post('/meal-plans/import-external', { externalMeal })
-  return res.data
+  try {
+    const res = await Client.post('/meal-plans/import-external', {
+      externalMeal
+    })
+    return res.data
+  } catch (error) {
+    console.error('Error importing external meal plan:', error)
+    throw error
+  }
 }
