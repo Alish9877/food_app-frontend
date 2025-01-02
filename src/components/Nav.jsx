@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import './MealPlanCard.css'
-import "./Nav.css"
+import './Nav.css'
+
 const Nav = ({ user, handleLogOut }) => {
   const [showDropdown, setShowDropdown] = useState(false)
 
@@ -9,14 +10,25 @@ const Nav = ({ user, handleLogOut }) => {
     setShowDropdown((prev) => !prev)
   }
 
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (!event.target.closest('.user-menu')) {
+        setShowDropdown(false)
+      }
+    }
+    document.addEventListener('click', handleOutsideClick)
+    return () => {
+      document.removeEventListener('click', handleOutsideClick)
+    }
+  }, [])
+
   return (
     <nav className="navbar">
       <div className="nav-links">
         <Link to="/">Home</Link>
-        
         {user && (
           <>
-          <Link to="/meal-plans">Meal Plans</Link>
+            <Link to="/meal-plans">Meal Plans</Link>
             <Link to="/subscriptions">Subscriptions</Link>
             <Link to="/deliveries">Deliveries</Link>
             {user.role === 'Admin' && <Link to="/admin">Admin Dashboard</Link>}
@@ -26,7 +38,11 @@ const Nav = ({ user, handleLogOut }) => {
       <div className="auth-links">
         {user ? (
           <div className="user-menu">
-            <span className="user-welcome" onClick={toggleDropdown}>
+            <span
+              className="user-welcome"
+              onClick={toggleDropdown}
+              aria-expanded={showDropdown}
+            >
               Welcome, {user.username}!
             </span>
             {showDropdown && (
@@ -40,7 +56,9 @@ const Nav = ({ user, handleLogOut }) => {
                 <button
                   onClick={() => {
                     setShowDropdown(false)
-                    handleLogOut()
+                    if (window.confirm('Are you sure you want to log out?')) {
+                      handleLogOut()
+                    }
                   }}
                 >
                   Log Out
@@ -57,5 +75,3 @@ const Nav = ({ user, handleLogOut }) => {
 }
 
 export default Nav
-
-
