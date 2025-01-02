@@ -78,3 +78,11 @@
   color: #666;
   margin: 16px 0;
 }
+.error {
+  color: red;
+  margin: 16px 0;
+}
+.success {
+  color: green;
+  margin: 16px 0;
+}
