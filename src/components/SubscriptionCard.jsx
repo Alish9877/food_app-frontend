@@ -3,7 +3,7 @@ const SubscriptionCard = ({ subscription, selectedMeals }) => {
 
   return (
     <div className="subscription-card">
-      <h3>Meal Plan: {mealPlanName}</h3>
+      <h3> {mealPlanName}</h3>
       <p>Start Date: {new Date(startDate).toLocaleDateString()}</p>
       <p>Duration: {duration} months</p>
       <p>Meals Per Day: {mealsPerDay}</p>
