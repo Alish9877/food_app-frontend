@@ -8,6 +8,7 @@ const SubscriptionPage = () => {
   const [selectedDays, setSelectedDays] = useState([])
   const [startingDay, setStartingDay] = useState('')
   const [deliveryTime, setDeliveryTime] = useState('')
+  const [Duration, setDuration] = useState('')
   const [selectedMeals, setSelectedMeals] = useState([])
   const [error, setError] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
@@ -50,6 +51,7 @@ const SubscriptionPage = () => {
     if (
       !startingDay ||
       !deliveryTime ||
+      !Duration||
       selectedDays.length === 0 ||
       selectedMeals.length === 0
     ) {
@@ -62,6 +64,7 @@ const SubscriptionPage = () => {
     const subscriptionData = {
       startingDay,
       deliveryTime,
+      Duration,
       selectedDays,
       selectedMeals,
       totalPrice,
@@ -132,6 +135,20 @@ const SubscriptionPage = () => {
         onChange={(e) => setStartingDay(e.target.value)}
       />
 
+      <h3>Duration</h3>
+      <select 
+  name="duration" 
+  id="duration" 
+  value={Duration} 
+  onChange={(e) => setDuration(e.target.value)}
+>
+  <option value="">Select Duration</option>
+  <option value="1">1 month</option>
+  <option value="2">2 months</option>
+  <option value="3">3 months</option>
+  <option value="6">6 months</option>
+</select>
+
       <h3>Delivery Time</h3>
       <div className="time-selector">
         <button
@@ -166,7 +183,7 @@ const SubscriptionPage = () => {
         subscription={{
           mealPlanName: 'Your Selected Meal Plan',
           startDate: startingDay,
-          duration: 1,
+          duration: Duration,
           mealsPerDay: selectedMeals.length,
           price: calculateTotalPrice()
         }}
