@@ -1,5 +1,5 @@
 const SubscriptionCard = ({ subscription, selectedMeals }) => {
-  const { mealPlanName, startDate, duration, mealsPerDay, price } = subscription;
+  const { mealPlanName, startDate, duration, mealsPerDay, price } = subscription
 
   return (
     <div className="subscription-card">
@@ -15,7 +15,7 @@ const SubscriptionCard = ({ subscription, selectedMeals }) => {
         ))}
       </ul>
     </div>
-  );
-};
+  )
+}
 
-export default SubscriptionCard;
+export default SubscriptionCard

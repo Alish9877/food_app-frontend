@@ -1,23 +1,21 @@
-import { useState } from 'react';
-import './DeliveryCard.css';
+import { useState } from 'react'
+import './DeliveryCard.css'
 
 const DeliveryCard = ({ delivery, handleSave }) => {
-  const { deliveryDate, deliveryTime, status, meals, totalPrice } = delivery;
-  const [building, setBuilding] = useState('');
-  const [block, setBlock] = useState('');
-  const [street, setStreet] = useState('');
-  const [flat, setFlat] = useState('');
+  const { deliveryDate, deliveryTime, status, meals, totalPrice } = delivery
+  const [building, setBuilding] = useState('')
+  const [block, setBlock] = useState('')
+  const [street, setStreet] = useState('')
+  const [flat, setFlat] = useState('')
 
   const handleSaveClick = () => {
-    const updatedDelivery = {
-      ...delivery,
-      building,
-      block,
-      street,
-      flat,
-    };
-    handleSave(updatedDelivery);
-  };
+    if (!building || !block) {
+      alert('Building and Block are required!')
+      return
+    }
+    const updatedDelivery = { ...delivery, building, block, street, flat }
+    handleSave(updatedDelivery)
+  }
 
   return (
     <div className="delivery-card">
@@ -56,7 +54,7 @@ const DeliveryCard = ({ delivery, handleSave }) => {
       </div>
       <button onClick={handleSaveClick}>Save</button>
     </div>
-  );
-};
+  )
+}
 
-export default DeliveryCard;
+export default DeliveryCard
