@@ -86,3 +86,24 @@
   color: green;
   margin: 16px 0;
 }
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.auth-form input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.auth-form button {
+  background-color: #3a873e;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 16px;
+  cursor: pointer;
+  margin: 8px;
+}
