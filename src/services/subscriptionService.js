@@ -25,10 +25,16 @@ export const fetchUserSubscriptions = async (userId) => {
 // Create a new subscription
 export const createSubscription = async (subscriptionData) => {
   try {
-    const res = await Client.post('/subscriptions', subscriptionData)
+    // Ensure 'duration' is a number
+    const payload = {
+      ...subscriptionData,
+      duration: Number(subscriptionData.duration)
+    }
+
+    const res = await Client.post('/subscriptions', payload)
     return res.data
   } catch (error) {
-    console.error('Error creating subscription:', error)
+    console.error('Error creating subscription:', error.response?.data || error)
     throw error.response?.data || 'Error creating subscription'
   }
 }
