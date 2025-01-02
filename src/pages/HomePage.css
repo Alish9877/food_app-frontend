@@ -107,3 +107,10 @@
   cursor: pointer;
   margin: 8px;
 }
+.auth-form button:hover {
+  background-color: #2e6b2f;
+}
+.auth-footer {
+  margin-top: 24px;
+  color: #666;
+}
