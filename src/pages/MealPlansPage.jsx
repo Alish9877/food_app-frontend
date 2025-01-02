@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import MealPlanCard from '../components/MealPlanCard'
+import { importExternalMealPlan } from '../services/mealPlanService'
 import './MealPlansPage.css'
 
 const MealPlansPage = ({ user }) => {
@@ -9,14 +10,14 @@ const MealPlansPage = ({ user }) => {
   const [backendMealPlans, setBackendMealPlans] = useState([])
   const [categories, setCategories] = useState([])
   const [selectedCategories, setSelectedCategories] = useState([])
-  const [selectedMeals, setSelectedMeals] = useState([]) // Changed from Set to Array
+  const [selectedMeals, setSelectedMeals] = useState([])
   const [error, setError] = useState(null)
   const [successMessage, setSuccessMessage] = useState('')
   const navigate = useNavigate()
 
   useEffect(() => {
     if (!user) {
-      navigate('/auth/login') // Redirect if not logged in
+      navigate('/auth/login')
       return
     }
     fetchExternalMealPlans()
@@ -28,7 +29,8 @@ const MealPlansPage = ({ user }) => {
       const response = await axios.get(
         'https://www.themealdb.com/api/json/v1/1/search.php?s'
       )
-      const mealsWithPrice = response.data.meals.map((meal) => {
+      const meals = response.data.meals || []
+      const mealsWithPrice = meals.map((meal) => {
         let price
         switch (meal.strCategory) {
           case 'Seafood':
@@ -52,8 +54,9 @@ const MealPlansPage = ({ user }) => {
         return { ...meal, price }
       })
       setMealPlans(mealsWithPrice)
+
       const uniqueCategories = [
-        ...new Set(mealsWithPrice.map((meal) => meal.strCategory))
+        ...new Set(mealsWithPrice.map((m) => m.strCategory))
       ]
       setCategories(uniqueCategories)
       setError(null)
@@ -65,8 +68,9 @@ const MealPlansPage = ({ user }) => {
 
   const fetchBackendMealPlans = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/meal-plans') // Adjust backend URL
+      const response = await axios.get('http://localhost:3001/meal-plans')
       setBackendMealPlans(response.data)
+
       const uniqueCategories = [
         ...new Set(response.data.map((meal) => meal.category))
       ]
@@ -88,18 +92,35 @@ const MealPlansPage = ({ user }) => {
     )
   }
 
-  const handleAddMeal = (meal) => {
-    setSelectedMeals((prevSelected) => {
-      let updatedMeals
-      if (prevSelected.includes(meal.idMeal || meal._id)) {
-        updatedMeals = prevSelected.filter(
-          (id) => id !== (meal.idMeal || meal._id)
+  const handleAddMeal = async (meal) => {
+    const uniqueId = meal.idMeal || meal._id
+    const isRemoving = selectedMeals.includes(uniqueId)
+
+    if (isRemoving) {
+      setSelectedMeals((prevSelected) =>
+        prevSelected.filter((id) => id !== uniqueId)
+      )
+      return
+    }
+    if (meal.idMeal && !meal._id) {
+      try {
+        const newMealPlan = await importExternalMealPlan(meal)
+        setBackendMealPlans((prev) => [...prev, newMealPlan])
+
+        setMealPlans((prev) =>
+          prev.map((m) =>
+            m.idMeal === meal.idMeal ? { ...m, _id: newMealPlan._id } : m
+          )
         )
-      } else {
-        updatedMeals = [...prevSelected, meal.idMeal || meal._id]
+
+        setSelectedMeals((prevSelected) => [...prevSelected, newMealPlan._id])
+      } catch (error) {
+        console.error('Error importing external meal in DB:', error)
+        setError('Failed to import external meal. Please try again later.')
       }
-      return updatedMeals
-    })
+    } else {
+      setSelectedMeals((prevSelected) => [...prevSelected, uniqueId])
+    }
   }
 
   const saveSelectedMealsToDatabase = async () => {
@@ -108,22 +129,27 @@ const MealPlansPage = ({ user }) => {
         ...mealPlans.filter((meal) => selectedMeals.includes(meal.idMeal)),
         ...backendMealPlans.filter((meal) => selectedMeals.includes(meal._id))
       ]
+
+      const mealPlanIds = selectedMealPlans.map((meal) => meal._id)
+
+      const totalPrice = selectedMealPlans.reduce(
+        (acc, meal) => acc + (meal.price || 0),
+        0
+      )
+
       const payload = {
-        userId: user.id, // Ensure this is valid
-        selectedMeals: selectedMealPlans.map((meal) => meal.idMeal || meal._id)
+        mealPlans: mealPlanIds,
+        startDate: '2025-01-15',
+        duration: 3,
+        mealsPerDay: '2-3',
+        price: totalPrice,
+        selectedDays: ['Sunday', 'Tuesday', 'Thursday', 'Friday', 'Saturday']
       }
 
-      console.log('Payload:', payload) // Log payload for debugging
+      console.log('Payload:', payload)
 
-      await axios.post(
-        'http://localhost:3001/meal-plans/selected-meals',
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
-          }
-        }
-      )
+      await axios.post('/subscriptions', payload)
+
       setSuccessMessage('Selected meals saved successfully!')
       setError(null)
     } catch (error) {
@@ -134,7 +160,7 @@ const MealPlansPage = ({ user }) => {
 
   const handleComplete = async () => {
     try {
-      console.log('Selected meals (temporarily not saved):', selectedMeals)
+      console.log('Selected meals (not yet saved):', selectedMeals)
       const selectedMealPlans = [
         ...mealPlans.filter((meal) => selectedMeals.includes(meal.idMeal)),
         ...backendMealPlans.filter((meal) => selectedMeals.includes(meal._id))
@@ -160,8 +186,10 @@ const MealPlansPage = ({ user }) => {
   return (
     <div className="meal-plans-page">
       <h1>Meal Plans</h1>
+
       {error && <p className="error">{error}</p>}
       {successMessage && <p className="success">{successMessage}</p>}
+
       <div className="filter-container">
         {categories.map((category) => (
           <label
@@ -177,11 +205,13 @@ const MealPlansPage = ({ user }) => {
           </label>
         ))}
       </div>
+
       {selectedMeals.length > 0 && (
         <button className="complete-button" onClick={handleComplete}>
           Complete
         </button>
       )}
+
       <div className="meal-plan-container">
         {filteredMealPlans.length > 0 ? (
           filteredMealPlans.map((mealPlan) => (
@@ -198,6 +228,12 @@ const MealPlansPage = ({ user }) => {
           <p>No meal plans match your filters.</p>
         )}
       </div>
+
+      {selectedMeals.length > 0 && (
+        <button className="save-button" onClick={saveSelectedMealsToDatabase}>
+          Save Selected Meals
+        </button>
+      )}
     </div>
   )
 }
