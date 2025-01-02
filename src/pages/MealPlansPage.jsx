@@ -134,21 +134,20 @@ const MealPlansPage = ({ user }) => {
 
   const handleComplete = async () => {
     try {
-      // Temporarily bypass save to database
-      console.log('Selected meals (temporarily not saved):', selectedMeals);
+      console.log('Selected meals (temporarily not saved):', selectedMeals)
       const selectedMealPlans = [
         ...mealPlans.filter((meal) => selectedMeals.includes(meal.idMeal)),
-        ...backendMealPlans.filter((meal) => selectedMeals.includes(meal._id)),
-      ];
+        ...backendMealPlans.filter((meal) => selectedMeals.includes(meal._id))
+      ]
       const queryString = selectedMealPlans
         .map((meal) => `meal=${encodeURIComponent(meal.name || meal.strMeal)}`)
-        .join('&');
-      navigate(`/subscriptions?${queryString}`);
+        .join('&')
+
+      navigate(`/subscriptions?${queryString}`)
     } catch (error) {
-      console.error('Error completing the selection:', error);
+      console.error('Error completing the selection:', error)
     }
-  };
-  
+  }
 
   const allMealPlans = [...mealPlans, ...backendMealPlans]
 

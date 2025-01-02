@@ -11,7 +11,7 @@ const MealPlanCard = ({ mealPlan, isSelected, handleAddMeal }) => {
 
   return (
     <div className={`meal-plan-card ${isSelected ? 'selected' : ''}`}>
-      <h3>Meal Plan: {mealPlanName}</h3>
+      <h3>{mealPlanName}</h3>
       <img src={image} alt={mealPlanName} />
       <p>Category: {strCategory}</p>
       <p>Area: {strArea}</p>
