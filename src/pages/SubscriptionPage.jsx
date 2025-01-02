@@ -50,8 +50,8 @@ const SubscriptionPage = () => {
   const totalPrice = calculateTotalPrice()
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-
+    e.preventDefault();
+  
     if (
       !startingDay ||
       !deliveryTime ||
@@ -60,11 +60,31 @@ const SubscriptionPage = () => {
       selectedDays.length === 0 ||
       selectedMeals.length === 0
     ) {
-      setError('Please fill all required fields.')
-      return
+      setError('Please fill all required fields.');
+      return;
     }
-
+  
+    const totalPrice = calculateTotalPrice();
+  
+    // Retrieve the token and decode
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setError('You must be logged in to perform this action.');
+      return;
+    }
+  
+    // Decode JWT token
+    const decodedToken = JSON.parse(atob(token.split('.')[1]));
+    const user = decodedToken; // Assuming the full user object is available in the token
+  
+    // Ensure that user data is available
+    if (!user) {
+      setError('User data is missing.');
+      return;
+    }
+  
     const subscriptionData = {
+      user,  // Pass the whole user object instead of just userId
       startingDay,
       deliveryTime,
       duration: Number(duration),
@@ -72,15 +92,9 @@ const SubscriptionPage = () => {
       selectedDays,
       selectedMeals,
       totalPrice
-    }
-
+    };
+  
     try {
-      const token = localStorage.getItem('token')
-      if (!token) {
-        setError('You must be logged in to perform this action.')
-        return
-      }
-
       const response = await axios.post(
         'http://localhost:3001/subscriptions',
         subscriptionData,
@@ -89,22 +103,23 @@ const SubscriptionPage = () => {
             Authorization: `Bearer ${token}`
           }
         }
-      )
-
-      setSuccessMessage('Subscription saved successfully!')
-      console.log('Saved subscription:', response.data)
-
+      );
+  
+      setSuccessMessage('Subscription saved successfully!');
+      console.log('Saved subscription:', response.data);
+  
       setTimeout(() => {
-        navigate('/deliveries', { state: { subscriptionData } })
-      }, 2000)
+        navigate('/deliveries', { state: { subscriptionData } });
+      }, 2000);
     } catch (error) {
-      console.error('Error saving subscription:', error.response?.data || error)
+      console.error('Error saving subscription:', error.response?.data || error);
       setError(
         error.response?.data?.message ||
           'Failed to save subscription. Please try again later.'
-      )
+      );
     }
-  }
+  };
+  
 
   return (
     <div className="subscription-page">
@@ -223,3 +238,5 @@ const SubscriptionPage = () => {
 }
 
 export default SubscriptionPage
+
+

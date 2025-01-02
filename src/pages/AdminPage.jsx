@@ -4,6 +4,7 @@ const MealPlansCRUD = lazy(() => import('../components/MealPlansCRUD'))
 const SubscriptionsCRUD = lazy(() => import('../components/SubscriptionsCRUD'))
 const DeliveriesCRUD = lazy(() => import('../components/DeliveriesCRUD'))
 
+
 const AdminPage = () => {
   const [activeSection, setActiveSection] = useState('mealPlans')
 
