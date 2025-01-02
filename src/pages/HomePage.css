@@ -67,3 +67,14 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
+.auth-header {
+  margin-bottom: 24px;
+}
+.auth-header h1 {
+  font-size: 2em;
+  color: #333;
+}
+.auth-header p {
+  color: #666;
+  margin: 16px 0;
+}
