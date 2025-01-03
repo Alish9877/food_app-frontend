@@ -3,7 +3,7 @@ const SubscriptionCard = ({ subscription, selectedMeals }) => {
 
   return (
     <div className="subscription-card">
-      <h3>Meal Plan: {mealPlanName || 'N/A'}</h3>
+      <h3>{mealPlanName || 'N/A'}</h3>
       <p>
         Start Date:{' '}
         {startDate ? new Date(startDate).toLocaleDateString() : 'N/A'}
@@ -11,13 +11,18 @@ const SubscriptionCard = ({ subscription, selectedMeals }) => {
       <p>Duration: {duration || 'N/A'} months</p>
       <p>Meals Per Day: {mealsPerDay || 'N/A'}</p>
       <p>Price: ${price ? price.toFixed(2) : '0.00'}</p>
-      <ul>
-        {selectedMeals && selectedMeals.length > 0 ? (
-          selectedMeals.map((meal, index) => <li key={index}>{meal}</li>)
-        ) : (
-          <p>No meals selected</p>
-        )}
-      </ul>
+
+      {selectedMeals && selectedMeals.length > 0 ? (
+        <ul>
+          {selectedMeals.map((mealName, index) => (
+            <li key={`${mealName}-${index}`}>
+              {mealName}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No meals selected</p>
+      )}
     </div>
   )
 }
