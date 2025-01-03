@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { createSubscription } from '../services/subscriptionService'
 import SubscriptionCard from '../components/SubscriptionCard'
 import './SubscriptionPage.css'
 
@@ -10,54 +9,76 @@ const SubscriptionPage = () => {
   const [deliveryTime, setDeliveryTime] = useState('')
   const [duration, setDuration] = useState('')
   const [mealsPerDay, setMealsPerDay] = useState('')
-  const [selectedMeals, setSelectedMeals] = useState([])
+  const [selectedMealObjects, setSelectedMealObjects] = useState([])
+
   const [error, setError] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
+
   const location = useLocation()
   const navigate = useNavigate()
 
-  // Extract mealPlans and backendMealPlans from location.state
-  const { mealPlans = [], backendMealPlans = [] } = location.state || {}
+  const { selectedMealPlans = [] } = location.state || {}
 
   useEffect(() => {
-    const queryParams = new URLSearchParams(location.search)
-    const meals = queryParams.getAll('meal')
-    setSelectedMeals(meals)
-  }, [location])
+    if (!selectedMealPlans.length) {
+      console.warn(
+        'No selectedMealPlans found. Maybe user navigated incorrectly.'
+      )
+    }
+    setSelectedMealObjects(selectedMealPlans)
+  }, [selectedMealPlans])
+
+  const handleRemoveMeal = (mealObj) => {
+    setSelectedMealObjects((prev) => prev.filter((m) => m !== mealObj))
+  }
 
   const handleDayChange = (day) => {
-    setSelectedDays((prevSelectedDays) => {
-      if (prevSelectedDays.includes(day)) {
-        return prevSelectedDays.filter((selectedDay) => selectedDay !== day)
+    setSelectedDays((prev) => {
+      if (prev.includes(day)) {
+        return prev.filter((d) => d !== day)
       }
-      if (prevSelectedDays.length >= 5) {
+      if (prev.length >= 5) {
         setError('You can only select up to 5 days.')
-        return prevSelectedDays
+        return prev
       }
-      return [...prevSelectedDays, day]
+      return [...prev, day]
     })
   }
 
   const calculateTotalPrice = () => {
-    const selectedMealPlans = [
-      ...mealPlans.filter((meal) => selectedMeals.includes(meal.idMeal)),
-      ...backendMealPlans.filter((meal) => selectedMeals.includes(meal._id))
-    ]
-    return selectedMealPlans.reduce((sum, meal) => sum + (meal.price || 0), 0)
+    return selectedMealObjects.reduce((sum, m) => sum + (m.price || 0), 0)
   }
-
   const totalPrice = calculateTotalPrice()
 
   const handleMealsPerDayChange = (e) => {
-    const selectedCount = Number(e.target.value)
-    setMealsPerDay(selectedCount)
-
-    if (selectedMeals.length > selectedCount) {
-      setSelectedMeals(selectedMeals.slice(0, selectedCount))
+    const num = Number(e.target.value)
+    setMealsPerDay(num)
+    if (selectedMealObjects.length > num) {
+      setSelectedMealObjects((prev) => prev.slice(0, num))
     }
   }
 
-  const handleSubmit = async (e) => {
+  const handleCheckMorning = () => {
+    if (deliveryTime === '7AM to 11AM (Morning)') {
+      setDeliveryTime('')
+    } else {
+      setDeliveryTime('7AM to 11AM (Morning)')
+    }
+  }
+
+  const handleCheckNight = () => {
+    if (deliveryTime === '6PM to 10PM (Night before)') {
+      setDeliveryTime('')
+    } else {
+      setDeliveryTime('6PM to 10PM (Night before)')
+    }
+  }
+
+  const handleBack = () => {
+    navigate('/meal-plans')
+  }
+
+  const handleContinue = (e) => {
     e.preventDefault()
 
     if (
@@ -66,44 +87,44 @@ const SubscriptionPage = () => {
       !duration ||
       !mealsPerDay ||
       selectedDays.length === 0 ||
-      selectedMeals.length === 0
+      selectedMealObjects.length === 0
     ) {
       setError('Please fill all required fields.')
       return
     }
 
     const subscriptionData = {
-      startingDay,
-      deliveryTime,
+      startDate: startingDay,
       duration: Number(duration),
       mealsPerDay: Number(mealsPerDay),
+      price: totalPrice,
       selectedDays,
-      selectedMeals,
-      totalPrice
+      mealPlans: selectedMealObjects,
+      preferences: [deliveryTime]
     }
 
-    try {
-      const response = await createSubscription(subscriptionData)
-      setSuccessMessage('Subscription saved successfully!')
-      console.log('Saved subscription:', response)
-      setTimeout(() => {
-        navigate('/deliveries', { state: { subscriptionData } })
-      }, 2000)
-    } catch (error) {
-      console.error('Error saving subscription:', error.message || error)
-      setError(
-        error.message || 'Failed to save subscription. Please try again later.'
-      )
-    }
+    setSuccessMessage('Subscription details set. Proceeding...')
+    setTimeout(() => {
+      navigate('/deliveries', { state: { subscriptionData } })
+    }, 1000)
   }
 
   return (
     <div className="subscription-page">
-      <h1>Days & Time</h1>
+      <h1>Finalize Subscription</h1>
       {error && <p className="error">{error}</p>}
       {successMessage && <p className="success">{successMessage}</p>}
 
-      <h3>Subscription Days</h3>
+      <div className="button-row">
+        <button onClick={handleBack} className="back-button">
+          Back
+        </button>
+        <button onClick={handleContinue} className="continue-button">
+          Continue
+        </button>
+      </div>
+
+      <h3>Select Days</h3>
       <div className="day-selector">
         {[
           'Sunday',
@@ -123,7 +144,7 @@ const SubscriptionPage = () => {
               type="checkbox"
               checked={selectedDays.includes(day)}
               readOnly
-            />{' '}
+            />
             {day}
           </button>
         ))}
@@ -134,84 +155,78 @@ const SubscriptionPage = () => {
         type="date"
         value={startingDay}
         onChange={(e) => setStartingDay(e.target.value)}
-        required
       />
 
-      <h3>Duration</h3>
-      <select
-        name="duration"
-        id="duration"
-        value={duration}
-        onChange={(e) => setDuration(e.target.value)}
-        required
-      >
+      <h3>Duration (months)</h3>
+      <select value={duration} onChange={(e) => setDuration(e.target.value)}>
         <option value="">Select Duration</option>
-        <option value="1">1 month</option>
-        <option value="2">2 months</option>
-        <option value="3">3 months</option>
-        <option value="6">6 months</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="6">6</option>
       </select>
 
-      <h3>Meals Per Day</h3>
-      <select
-        name="mealsPerDay"
-        id="mealsPerDay"
-        value={mealsPerDay}
-        onChange={handleMealsPerDayChange}
-        required
-      >
-        <option value="">Select Meals Per Day</option>
+      <h3>Meals Per Day (1 to 3)</h3>
+      <select value={mealsPerDay} onChange={handleMealsPerDayChange}>
+        <option value="">Select</option>
         <option value="1">1</option>
         <option value="2">2</option>
         <option value="3">3</option>
       </select>
 
       <h3>Delivery Time</h3>
-      <div className="time-selector">
-        <button
-          type="button"
-          className={deliveryTime === '7AM to 11AM (Morning)' ? 'selected' : ''}
-          onClick={() => setDeliveryTime('7AM to 11AM (Morning)')}
-        >
+      <div className="time-checkboxes">
+        <label>
           <input
-            type="radio"
+            type="checkbox"
             checked={deliveryTime === '7AM to 11AM (Morning)'}
-            readOnly
-          />{' '}
+            onChange={handleCheckMorning}
+          />
           7AM to 11AM (Morning)
-        </button>
-        <button
-          type="button"
-          className={
-            deliveryTime === '6PM to 10PM (Night before)' ? 'selected' : ''
-          }
-          onClick={() => setDeliveryTime('6PM to 10PM (Night before)')}
-        >
+        </label>
+        <label>
           <input
-            type="radio"
+            type="checkbox"
             checked={deliveryTime === '6PM to 10PM (Night before)'}
-            readOnly
-          />{' '}
+            onChange={handleCheckNight}
+          />
           6PM to 10PM (Night before)
-        </button>
+        </label>
       </div>
 
-      <p>You can always skip a day or make changes from your settings.</p>
+      <h3>Selected Meals</h3>
+      <p>Total Price: ${totalPrice}</p>
+      {selectedMealObjects.length === 0 ? (
+        <p>No meals selected yet.</p>
+      ) : (
+        <ul>
+          {selectedMealObjects.map((mealObj) => {
+            const mealName =
+              mealObj.strMeal || mealObj.name || '(Untitled Meal)'
+            return (
+              <li key={mealName}>
+                {mealName}{' '}
+                <button onClick={() => handleRemoveMeal(mealObj)}>
+                  Remove
+                </button>
+              </li>
+            )
+          })}
+        </ul>
+      )}
 
       <SubscriptionCard
         subscription={{
-          mealPlanName: 'Your Selected Meal Plan',
+          mealPlanName: 'Your Selected Meals',
           startDate: startingDay,
-          duration: duration,
-          mealsPerDay: mealsPerDay,
+          duration,
+          mealsPerDay,
           price: totalPrice
         }}
-        selectedMeals={selectedMeals}
+        selectedMeals={selectedMealObjects.map(
+          (m) => m.strMeal || m.name || '(Untitled Meal)'
+        )}
       />
-
-      <button type="submit" className="continue-button" onClick={handleSubmit}>
-        Continue
-      </button>
     </div>
   )
 }

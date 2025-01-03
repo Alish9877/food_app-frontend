@@ -1,31 +1,58 @@
 import { useState } from 'react'
 import './DeliveryCard.css'
 
-const DeliveryCard = ({ delivery, handleSave }) => {
-  const { deliveryDate, deliveryTime, status, meals, totalPrice } = delivery
+const DeliveryCard = ({ delivery, onDeliveryChange }) => {
+
+  const { id, status, meals, totalPrice } = delivery
+
+  const [deliveryDate, setDeliveryDate] = useState(delivery.deliveryDate || '')
   const [building, setBuilding] = useState('')
   const [block, setBlock] = useState('')
   const [street, setStreet] = useState('')
   const [flat, setFlat] = useState('')
 
-  const handleSaveClick = () => {
-    if (!building || !block) {
-      alert('Building and Block are required!')
+  const handleUpdateClick = () => {
+    if (!deliveryDate) {
+      alert('Delivery date is required and must be in the future!')
       return
     }
-    const updatedDelivery = { ...delivery, building, block, street, flat }
-    handleSave(updatedDelivery)
+    if (!building && !block && !street && !flat) {
+      alert('At least one address field must be provided.')
+      return
+    }
+
+    const locationString = `${building ? 'Bldg ' + building + ', ' : ''}${
+      block ? 'Block ' + block + ', ' : ''
+    }${street ? 'St ' + street + ', ' : ''}${flat ? 'Flat ' + flat : ''}`.trim()
+
+    const updatedDelivery = {
+      ...delivery,
+      deliveryDate,
+      status: status || 'Pending',
+      location: locationString,
+      meals: meals || []
+    }
+    onDeliveryChange(updatedDelivery)
   }
 
   return (
     <div className="delivery-card">
-      <h3>Delivery Date: {new Date(deliveryDate).toLocaleDateString()}</h3>
-      <p>Delivery Time: {deliveryTime}</p>
-      <p>Status: {status}</p>
+      <h3>Delivery #{id}</h3>
+      <p>Status: {status || 'Pending'}</p>
       <ul>
-        {meals && meals.map((meal, index) => <li key={index}>{meal}</li>)}
+        {meals?.map((meal, index) => (
+          <li key={index}>{meal}</li>
+        ))}
       </ul>
-      <p>Total Price: ${totalPrice.toFixed(2)}</p>
+      <p>Total Price: ${totalPrice ? totalPrice.toFixed(2) : '0.00'}</p>
+
+      <label>Delivery Date (must be future):</label>
+      <input
+        type="date"
+        value={deliveryDate}
+        onChange={(e) => setDeliveryDate(e.target.value)}
+      />
+
       <div className="optional-fields">
         <input
           type="text"
@@ -52,7 +79,8 @@ const DeliveryCard = ({ delivery, handleSave }) => {
           onChange={(e) => setFlat(e.target.value)}
         />
       </div>
-      <button onClick={handleSaveClick}>Save</button>
+
+      <button onClick={handleUpdateClick}>Update Delivery</button>
     </div>
   )
 }
