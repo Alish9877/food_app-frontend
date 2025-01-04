@@ -1,172 +1,187 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   fetchAllSubscriptions,
   createSubscription,
   updateSubscription,
-  cancelSubscription
+  cancelSubscription // Updated function name
 } from '../../services/subscriptionService'
+import { fetchAllMealPlans } from '../../services/mealPlanService'
+import '../admin/SubscriptionCRUD.css'
 
 const SubscriptionCRUD = () => {
   const [subscriptions, setSubscriptions] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [mealPlans, setMealPlans] = useState([])
   const [formData, setFormData] = useState({
-    userId: '',
-    mealPlan: '',
+    user: '',
+    mealPlans: [],
     startDate: '',
-    duration: '',
-    mealsPerDay: ''
+    duration: ''
   })
-  const [editingSubscription, setEditingSubscription] = useState(null)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editingId, setEditingId] = useState(null)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
-    loadSubscriptions()
+    const loadData = async () => {
+      try {
+        const [subsData, mealPlansData] = await Promise.all([
+          fetchAllSubscriptions(),
+          fetchAllMealPlans()
+        ])
+        setSubscriptions(subsData)
+        setMealPlans(mealPlansData)
+      } catch (err) {
+        console.error('Error loading data:', err)
+        setError('Failed to load subscriptions or meal plans.')
+      }
+    }
+    loadData()
   }, [])
 
-  const loadSubscriptions = async () => {
-    setLoading(true)
-    try {
-      const data = await fetchAllSubscriptions()
-      setSubscriptions(data)
-      setError(null)
-    } catch (err) {
-      setError('Failed to load subscriptions.')
-    } finally {
-      setLoading(false)
-    }
+  const resetForm = () => {
+    setFormData({
+      user: '',
+      mealPlans: [],
+      startDate: '',
+      duration: ''
+    })
+    setIsEditing(false)
+    setEditingId(null)
   }
 
-  const handleAddOrUpdateSubscription = async (e) => {
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleMealPlanChange = (e) => {
+    const options = Array.from(
+      e.target.selectedOptions,
+      (option) => option.value
+    )
+    setFormData((prev) => ({ ...prev, mealPlans: options }))
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      if (editingSubscription) {
-        await updateSubscription(editingSubscription._id, formData)
+      if (isEditing) {
+        await updateSubscription(editingId, formData)
         setSubscriptions((prev) =>
           prev.map((sub) =>
-            sub._id === editingSubscription._id ? { ...sub, ...formData } : sub
+            sub._id === editingId ? { ...sub, ...formData } : sub
           )
         )
       } else {
-        const newSub = await createSubscription(formData)
-        setSubscriptions((prev) => [...prev, newSub])
+        const newSubscription = await createSubscription(formData)
+        setSubscriptions((prev) => [...prev, newSubscription])
       }
-      setFormData({
-        userId: '',
-        mealPlan: '',
-        startDate: '',
-        duration: '',
-        mealsPerDay: ''
-      })
-      setEditingSubscription(null)
+      resetForm()
     } catch (err) {
       console.error('Error saving subscription:', err)
+      setError('Failed to save subscription.')
     }
   }
 
-  const handleEditSubscription = (sub) => {
-    setEditingSubscription(sub)
+  const handleEdit = (subscription) => {
     setFormData({
-      userId: sub.userId || '',
-      mealPlan: sub.mealPlan || '',
-      startDate: sub.startDate?.slice(0, 10) || '',
-      duration: sub.duration || '',
-      mealsPerDay: sub.mealsPerDay || ''
+      user: subscription.user || '',
+      mealPlans: subscription.mealPlans.map((plan) => plan._id) || [],
+      startDate: subscription.startDate || '',
+      duration: subscription.duration || ''
     })
+    setIsEditing(true)
+    setEditingId(subscription._id)
   }
 
-  const handleDeleteSubscription = async (id) => {
+  const handleCancel = async (id) => {
+    if (!window.confirm('Are you sure you want to cancel this subscription?'))
+      return
     try {
       await cancelSubscription(id)
-      setSubscriptions((prev) => prev.filter((s) => s._id !== id))
+      setSubscriptions((prev) => prev.filter((sub) => sub._id !== id))
     } catch (err) {
-      console.error('Error deleting subscription:', err)
+      console.error('Error canceling subscription:', err)
+      setError('Failed to cancel subscription.')
     }
   }
-
-  if (loading) return <p>Loading subscriptions...</p>
-  if (error) return <p>{error}</p>
 
   return (
     <div className="subscription-crud">
-      <h2>Manage Subscriptions</h2>
-      <form onSubmit={handleAddOrUpdateSubscription}>
+      <h2>Subscriptions</h2>
+      {error && <p className="error">{error}</p>}
+      <form onSubmit={handleSubmit}>
         <input
           type="text"
-          name="userId"
-          value={formData.userId}
-          onChange={(e) => setFormData({ ...formData, userId: e.target.value })}
+          name="user"
           placeholder="User ID"
+          value={formData.user}
+          onChange={handleInputChange}
           required
         />
-        <input
-          type="text"
-          name="mealPlan"
-          value={formData.mealPlan}
-          onChange={(e) =>
-            setFormData({ ...formData, mealPlan: e.target.value })
-          }
-          placeholder="Meal Plan ID or Name"
+        <select
+          name="mealPlans"
+          multiple
+          value={formData.mealPlans}
+          onChange={handleMealPlanChange}
           required
-        />
+        >
+          <option value="" disabled>
+            Select Meal Plans
+          </option>
+          {mealPlans.map((mealPlan) => (
+            <option key={mealPlan._id} value={mealPlan._id}>
+              {mealPlan.name}
+            </option>
+          ))}
+        </select>
         <input
           type="date"
           name="startDate"
+          placeholder="Start Date"
           value={formData.startDate}
-          onChange={(e) =>
-            setFormData({ ...formData, startDate: e.target.value })
-          }
+          onChange={handleInputChange}
           required
         />
         <input
           type="number"
           name="duration"
-          value={formData.duration}
-          onChange={(e) =>
-            setFormData({ ...formData, duration: e.target.value })
-          }
           placeholder="Duration (months)"
-          required
-        />
-        <input
-          type="number"
-          name="mealsPerDay"
-          value={formData.mealsPerDay}
-          onChange={(e) =>
-            setFormData({ ...formData, mealsPerDay: e.target.value })
-          }
-          placeholder="Meals Per Day"
+          value={formData.duration}
+          onChange={handleInputChange}
           required
         />
         <button type="submit">
-          {editingSubscription ? 'Update Subscription' : 'Add Subscription'}
+          {isEditing ? 'Update' : 'Add'} Subscription
         </button>
+        {isEditing && <button onClick={resetForm}>Cancel</button>}
       </form>
-      <table>
+
+      <table className="subscription-table">
         <thead>
           <tr>
             <th>User ID</th>
-            <th>Meal Plan</th>
+            <th>Meal Plans</th>
             <th>Start Date</th>
             <th>Duration</th>
-            <th>Meals Per Day</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {subscriptions.map((sub) => (
             <tr key={sub._id}>
-              <td>{sub.userId}</td>
-              <td>{sub.mealPlan}</td>
+              <td>
+                {sub.user?.username ||
+                  sub.user?.email ||
+                  sub.user?._id ||
+                  'Unknown User'}
+              </td>
+              <td>{sub.mealPlans.map((plan) => plan.name).join(', ')}</td>
               <td>{new Date(sub.startDate).toLocaleDateString()}</td>
               <td>{sub.duration} months</td>
-              <td>{sub.mealsPerDay}</td>
               <td>
-                <button onClick={() => handleEditSubscription(sub)}>
-                  Edit
-                </button>
-                <button onClick={() => handleDeleteSubscription(sub._id)}>
-                  Delete
-                </button>
+                <button onClick={() => handleEdit(sub)}>Edit</button>
+                <button onClick={() => handleCancel(sub._id)}>Cancel</button>
               </td>
             </tr>
           ))}

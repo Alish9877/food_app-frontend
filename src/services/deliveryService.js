@@ -55,6 +55,18 @@ export const updateDeliveryStatus = async (deliveryId, status) => {
   }
 }
 
+// Update delivery (Admin only)
+export const updateDelivery = async (deliveryId, deliveryData) => {
+  try {
+    const res = await Client.put(`/deliveries/${deliveryId}`, deliveryData);
+    return res.data;
+  } catch (error) {
+    console.error('Error updating delivery:', error);
+    throw error.response?.data || 'Error updating delivery';
+  }
+};
+
+
 // Delete a delivery (Admin only)
 export const deleteDelivery = async (deliveryId) => {
   try {

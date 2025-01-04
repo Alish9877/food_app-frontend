@@ -5,121 +5,134 @@ import {
   updateMealPlan,
   deleteMealPlan
 } from '../../services/mealPlanService'
+import '../admin/MealPlanCRUD.css'
 
 const MealPlanCRUD = () => {
   const [mealPlans, setMealPlans] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [mealPlanForm, setMealPlanForm] = useState({
+  const [formData, setFormData] = useState({
     name: '',
     description: '',
-    price: 0,
+    price: '',
     dishes: []
   })
-  const [editingMealPlan, setEditingMealPlan] = useState(null)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editingId, setEditingId] = useState(null)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
+    const loadMealPlans = async () => {
+      try {
+        const data = await fetchAllMealPlans()
+        setMealPlans(data)
+      } catch (err) {
+        console.error('Error fetching meal plans:', err)
+        setError('Failed to load meal plans.')
+      }
+    }
     loadMealPlans()
   }, [])
 
-  const loadMealPlans = async () => {
-    setLoading(true)
-    try {
-      const data = await fetchAllMealPlans()
-      setMealPlans(data)
-      setError(null)
-    } catch (err) {
-      setError('Failed to load meal plans.')
-    } finally {
-      setLoading(false)
-    }
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      description: '',
+      price: '',
+      dishes: []
+    })
+    setIsEditing(false)
+    setEditingId(null)
   }
 
-  const handleSaveMealPlan = async () => {
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleDishChange = (e) => {
+    const dishes = e.target.value.split(',').map((dish) => dish.trim())
+    setFormData((prev) => ({ ...prev, dishes }))
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
     try {
-      if (editingMealPlan) {
-        const updated = await updateMealPlan(editingMealPlan._id, mealPlanForm)
+      if (isEditing) {
+        await updateMealPlan(editingId, formData)
         setMealPlans((prev) =>
-          prev.map((mp) => (mp._id === updated._id ? updated : mp))
+          prev.map((plan) =>
+            plan._id === editingId ? { ...plan, ...formData } : plan
+          )
         )
       } else {
-        const added = await createMealPlan(mealPlanForm)
-        setMealPlans((prev) => [...prev, added])
+        const newMealPlan = await createMealPlan(formData)
+        setMealPlans((prev) => [...prev, newMealPlan])
       }
       resetForm()
     } catch (err) {
       console.error('Error saving meal plan:', err)
+      setError('Failed to save meal plan.')
     }
   }
 
-  const handleEditMealPlan = (mealPlan) => {
-    setEditingMealPlan(mealPlan)
-    setMealPlanForm({
-      name: mealPlan.name,
-      description: mealPlan.description,
-      price: mealPlan.price,
-      dishes: mealPlan.dishes.join(', ')
-    })
+  const handleEdit = (mealPlan) => {
+    setFormData(mealPlan)
+    setIsEditing(true)
+    setEditingId(mealPlan._id)
   }
 
-  const handleDeleteMealPlan = async (id) => {
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this meal plan?'))
+      return
     try {
       await deleteMealPlan(id)
-      setMealPlans((prev) => prev.filter((mp) => mp._id !== id))
+      setMealPlans((prev) => prev.filter((plan) => plan._id !== id))
     } catch (err) {
       console.error('Error deleting meal plan:', err)
+      setError('Failed to delete meal plan.')
     }
   }
-
-  const resetForm = () => {
-    setMealPlanForm({ name: '', description: '', price: 0, dishes: [] })
-    setEditingMealPlan(null)
-  }
-
-  if (loading) return <p>Loading meal plans...</p>
-  if (error) return <p>{error}</p>
 
   return (
     <div className="meal-plan-crud">
-      <h2>{editingMealPlan ? 'Edit Meal Plan' : 'Add Meal Plan'}</h2>
-      <div>
+      <h2>Meal Plans</h2>
+      {error && <p className="error">{error}</p>}
+      <form onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="Name"
-          value={mealPlanForm.name}
-          onChange={(e) =>
-            setMealPlanForm({ ...mealPlanForm, name: e.target.value })
-          }
+          name="name"
+          placeholder="Meal Plan Name"
+          value={formData.name}
+          onChange={handleInputChange}
+          required
         />
         <textarea
+          name="description"
           placeholder="Description"
-          value={mealPlanForm.description}
-          onChange={(e) =>
-            setMealPlanForm({ ...mealPlanForm, description: e.target.value })
-          }
+          value={formData.description}
+          onChange={handleInputChange}
+          required
         />
         <input
           type="number"
+          name="price"
           placeholder="Price"
-          value={mealPlanForm.price}
-          onChange={(e) =>
-            setMealPlanForm({ ...mealPlanForm, price: Number(e.target.value) })
-          }
+          value={formData.price}
+          onChange={handleInputChange}
+          required
         />
-        <textarea
+        <input
+          type="text"
+          name="dishes"
           placeholder="Dishes (comma-separated)"
-          value={mealPlanForm.dishes}
-          onChange={(e) =>
-            setMealPlanForm({ ...mealPlanForm, dishes: e.target.value })
-          }
+          value={formData.dishes.join(', ')}
+          onChange={handleDishChange}
+          required
         />
-        <button onClick={handleSaveMealPlan}>
-          {editingMealPlan ? 'Update' : 'Add'}
-        </button>
-        {editingMealPlan && <button onClick={resetForm}>Cancel</button>}
-      </div>
+        <button type="submit">{isEditing ? 'Update' : 'Add'} Meal Plan</button>
+        {isEditing && <button onClick={resetForm}>Cancel</button>}
+      </form>
 
-      <table>
+      <table className="meal-plan-table">
         <thead>
           <tr>
             <th>Name</th>
@@ -130,17 +143,15 @@ const MealPlanCRUD = () => {
           </tr>
         </thead>
         <tbody>
-          {mealPlans.map((mp) => (
-            <tr key={mp._id}>
-              <td>{mp.name}</td>
-              <td>{mp.description}</td>
-              <td>{mp.price}</td>
-              <td>{mp.dishes.join(', ')}</td>
+          {mealPlans.map((plan) => (
+            <tr key={plan._id}>
+              <td>{plan.name}</td>
+              <td>{plan.description}</td>
+              <td>${plan.price}</td>
+              <td>{plan.dishes.join(', ')}</td>
               <td>
-                <button onClick={() => handleEditMealPlan(mp)}>Edit</button>
-                <button onClick={() => handleDeleteMealPlan(mp._id)}>
-                  Delete
-                </button>
+                <button onClick={() => handleEdit(plan)}>Edit</button>
+                <button onClick={() => handleDelete(plan._id)}>Delete</button>
               </td>
             </tr>
           ))}

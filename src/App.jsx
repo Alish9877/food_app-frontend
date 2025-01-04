@@ -10,6 +10,7 @@ import HomePage from './pages/HomePage'
 import MealPlansPage from './pages/MealPlansPage'
 import SubscriptionPage from './pages/SubscriptionPage'
 import ReviewPage from './pages/ReviewPage'
+import DashboardPage from './pages/DashboardPage'
 import './App.css'
 
 const App = () => {
@@ -110,6 +111,12 @@ const App = () => {
           <Route
             path="/review"
             element={<ProtectedRoute component={<ReviewPage />} />}
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute component={<DashboardPage user={user} />} />
+            }
           />
         </Routes>
       </main>

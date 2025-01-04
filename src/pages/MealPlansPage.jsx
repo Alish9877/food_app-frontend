@@ -55,8 +55,6 @@ const MealPlansPage = ({ user }) => {
       .map((id) => mealPlans.find((meal) => meal._id === id))
       .filter(Boolean)
 
-    console.log('Mapped selectedMealPlans:', selectedMealPlans)
-
     navigate('/subscriptions', {
       state: { selectedMealPlans }
     })

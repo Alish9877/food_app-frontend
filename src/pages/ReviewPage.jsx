@@ -27,12 +27,14 @@ const ReviewPage = () => {
     try {
       const payload = {
         ...subscriptionData,
-        user: subscriptionData.user || 'defaultUserId', // Replace with actual user retrieval logic
+        user: subscriptionData.user || 'defaultUserId',
         mealPlans: subscriptionData.mealPlans.map((meal) => meal._id),
-        deliveries // Include deliveries in the payload
+        deliveries: deliveries.map(({ id, ...rest }) => ({
+          ...rest,
+          _id: new Date().getTime().toString(16)
+        }))
       }
 
-      console.log('Sending subscription data:', payload)
       await createSubscription(payload)
       setSuccessMessage('Subscription created successfully! Redirecting...')
       setTimeout(() => navigate('/dashboard'), 2000)

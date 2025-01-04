@@ -1,42 +1,49 @@
-import { useState } from 'react'
-import MealPlanCRUD from '../components/admin/MealPlanCRUD'
-import SubscriptionCRUD from '../components/admin/SubscriptionCRUD'
-import DeliveryCRUD from '../components/admin/DeliveryCRUD'
+import { useState, lazy, Suspense } from 'react'
 import './AdminPage.css'
 
+// Lazy loading components for better performance
+const MealPlanCRUD = lazy(() => import('../components/admin/MealPlanCRUD'))
+const SubscriptionCRUD = lazy(() =>
+  import('../components/admin/SubscriptionCRUD')
+)
+const DeliveryCRUD = lazy(() => import('../components/admin/DeliveryCRUD'))
+
 const AdminPage = () => {
-  const [activeSection, setActiveSection] = useState('mealPlans')
+  const [activeTab, setActiveTab] = useState('mealPlans') // Default tab
+
+  const tabs = [
+    { key: 'mealPlans', label: 'Meal Plans', component: <MealPlanCRUD /> },
+    {
+      key: 'subscriptions',
+      label: 'Subscriptions',
+      component: <SubscriptionCRUD />
+    },
+    { key: 'deliveries', label: 'Deliveries', component: <DeliveryCRUD /> }
+  ]
 
   return (
     <div className="admin-page">
       <h1>Admin Dashboard</h1>
       <p>Access tools to manage meal plans, subscriptions, and deliveries.</p>
 
+      {/* Tab navigation */}
       <div className="admin-tabs">
-        <button
-          className={activeSection === 'mealPlans' ? 'active' : ''}
-          onClick={() => setActiveSection('mealPlans')}
-        >
-          Meal Plans
-        </button>
-        <button
-          className={activeSection === 'subscriptions' ? 'active' : ''}
-          onClick={() => setActiveSection('subscriptions')}
-        >
-          Subscriptions
-        </button>
-        <button
-          className={activeSection === 'deliveries' ? 'active' : ''}
-          onClick={() => setActiveSection('deliveries')}
-        >
-          Deliveries
-        </button>
+        {tabs.map((tab) => (
+          <button
+            key={tab.key}
+            className={`tab-button ${activeTab === tab.key ? 'active' : ''}`}
+            onClick={() => setActiveTab(tab.key)}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
-      <div className="admin-section">
-        {activeSection === 'mealPlans' && <MealPlanCRUD />}
-        {activeSection === 'subscriptions' && <SubscriptionCRUD />}
-        {activeSection === 'deliveries' && <DeliveryCRUD />}
+      {/* Active tab content */}
+      <div className="admin-content">
+        <Suspense fallback={<p>Loading...</p>}>
+          {tabs.find((tab) => tab.key === activeTab)?.component}
+        </Suspense>
       </div>
     </div>
   )
