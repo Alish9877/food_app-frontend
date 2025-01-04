@@ -1,16 +1,14 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import MealPlanCard from '../components/MealPlanCard'
+import { fetchAllMealPlans } from '../services/mealPlanService'
 import './MealPlansPage.css'
 
 const MealPlansPage = ({ user }) => {
   const [mealPlans, setMealPlans] = useState([])
-  const [backendMealPlans, setBackendMealPlans] = useState([])
   const [categories, setCategories] = useState([])
   const [selectedCategories, setSelectedCategories] = useState([])
   const [selectedMeals, setSelectedMeals] = useState([])
-
   const [error, setError] = useState(null)
 
   const navigate = useNavigate()
@@ -20,65 +18,22 @@ const MealPlansPage = ({ user }) => {
       navigate('/auth/login')
       return
     }
-    fetchExternalMealPlans()
-    fetchBackendMealPlans()
+    loadMealPlans()
   }, [user, navigate])
 
-  // Fetch external meals from TheMealDB
-  const fetchExternalMealPlans = async () => {
+  const loadMealPlans = async () => {
     try {
-      const res = await axios.get('https://www.themealdb.com/api/json/v1/1/search.php?s')
-      const meals = res.data.meals || []
-      const mealsWithPrice = meals.map((meal) => {
-        let price
-        switch (meal.strCategory) {
-          case 'Seafood':
-            price = 69
-            break
-          case 'Beef':
-            price = 50
-            break
-          case 'Chicken':
-            price = 30
-            break
-          case 'Vegetarian':
-            price = 25
-            break
-          case 'Dessert':
-            price = 22
-            break
-          default:
-            price = 10
-        }
-        return { ...meal, price }
-      })
-      setMealPlans(mealsWithPrice)
-      const uniqueCategories = [
-        ...new Set(mealsWithPrice.map((m) => m.strCategory))
-      ]
+      const data = await fetchAllMealPlans()
+      setMealPlans(data)
+      const uniqueCategories = [...new Set(data.map((meal) => meal.category))]
       setCategories(uniqueCategories)
       setError(null)
     } catch (err) {
-      console.error('Error fetching external meal plans:', err)
-      setError('Failed to load external meal plans. Please try again later.')
+      console.error('Error fetching meal plans:', err)
+      setError('Failed to load meal plans. Please try again later.')
     }
   }
 
-  // Fetch meal plans from your local CRUD backend
-  const fetchBackendMealPlans = async () => {
-    try {
-      const res = await axios.get('http://localhost:3001/meal-plans')
-      setBackendMealPlans(res.data)
-      const uniqueCategories = [...new Set(res.data.map((meal) => meal.category))]
-      setCategories((prev) => [...new Set([...prev, ...uniqueCategories])])
-      setError(null)
-    } catch (err) {
-      console.error('Error fetching backend meal plans:', err)
-      setError('Failed to load custom meal plans. Please try again later.')
-    }
-  }
-
-  // Toggle category filters
   const handleCategoryChange = (category) => {
     setSelectedCategories((prev) =>
       prev.includes(category)
@@ -87,46 +42,29 @@ const MealPlansPage = ({ user }) => {
     )
   }
 
-  // Toggle "Add" or "Remove" for a meal in selectedMeals
   const handleAddMeal = (meal) => {
-    const uniqueId = meal._id || meal.idMeal
-    const isRemoving = selectedMeals.includes(uniqueId)
-
-    if (isRemoving) {
-      setSelectedMeals((prev) => prev.filter((id) => id !== uniqueId))
-    } else {
-      setSelectedMeals((prev) => [...prev, uniqueId])
-    }
+    setSelectedMeals((prev) =>
+      prev.includes(meal._id)
+        ? prev.filter((id) => id !== meal._id)
+        : [...prev, meal._id]
+    )
   }
 
-
-  // Move to SubscriptionPage with the user’s selected meals
   const handleComplete = () => {
-    console.log('Selected meals (local only):', selectedMeals)
+    const selectedMealPlans = selectedMeals
+      .map((id) => mealPlans.find((meal) => meal._id === id))
+      .filter(Boolean)
 
-    const selectedMealPlans = [
-      ...mealPlans.filter((m) => selectedMeals.includes(m.idMeal)),
-      ...backendMealPlans.filter((m) => selectedMeals.includes(m._id))
-    ]
+    console.log('Mapped selectedMealPlans:', selectedMealPlans)
 
     navigate('/subscriptions', {
-      state: {
-        selectedMealPlans,
-        mealPlans,
-        backendMealPlans
-      }
+      state: { selectedMealPlans }
     })
   }
 
-  // Merge external + backend for display
-  const allMealPlans = [...mealPlans, ...backendMealPlans]
-
-  // Filter by categories
   const filteredMealPlans = selectedCategories.length
-    ? allMealPlans.filter((m) =>
-        selectedCategories.includes(m.strCategory || m.category)
-      )
-    : allMealPlans
+    ? mealPlans.filter((meal) => selectedCategories.includes(meal.category))
+    : mealPlans
 
   return (
     <div className="meal-plans-page">
@@ -157,18 +95,15 @@ const MealPlansPage = ({ user }) => {
 
       <div className="meal-plan-container">
         {filteredMealPlans.length > 0 ? (
-          filteredMealPlans.map((mealPlan) => {
-            const uniqueId = mealPlan._id || mealPlan.idMeal
-            const isSelected = selectedMeals.includes(uniqueId)
-            return (
-              <MealPlanCard
-                key={uniqueId}
-                mealPlan={mealPlan}
-                isSelected={isSelected}
-                handleAddMeal={handleAddMeal}
-              />
-            )
-          })
+          filteredMealPlans.map((mealPlan) => (
+            <MealPlanCard
+              key={mealPlan._id}
+              mealPlan={mealPlan}
+              selected={selectedMeals.includes(mealPlan._id)}
+              onAdd={handleAddMeal}
+              onRemove={handleAddMeal}
+            />
+          ))
         ) : (
           <p>No meal plans match your filters.</p>
         )}

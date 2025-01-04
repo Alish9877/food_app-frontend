@@ -3,12 +3,11 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import SubscriptionCard from '../components/SubscriptionCard'
 import './SubscriptionPage.css'
 
-const SubscriptionPage = () => {
+const SubscriptionPage = ({ user }) => {
   const [selectedDays, setSelectedDays] = useState([])
   const [startingDay, setStartingDay] = useState('')
   const [deliveryTime, setDeliveryTime] = useState('')
   const [duration, setDuration] = useState('')
-  const [mealsPerDay, setMealsPerDay] = useState('')
   const [selectedMealObjects, setSelectedMealObjects] = useState([])
 
   const [error, setError] = useState(null)
@@ -20,58 +19,39 @@ const SubscriptionPage = () => {
   const { selectedMealPlans = [] } = location.state || {}
 
   useEffect(() => {
-    if (!selectedMealPlans.length) {
-      console.warn(
-        'No selectedMealPlans found. Maybe user navigated incorrectly.'
-      )
+    if (!user) {
+      navigate('/auth/login')
+      return
     }
-    setSelectedMealObjects(selectedMealPlans)
-  }, [selectedMealPlans])
+    if (selectedMealPlans.length > 0) {
+      setSelectedMealObjects(selectedMealPlans)
+    } else {
+      setError('No meals selected. Please go back and select meals.')
+    }
+  }, [user, selectedMealPlans, navigate])
 
   const handleRemoveMeal = (mealObj) => {
     setSelectedMealObjects((prev) => prev.filter((m) => m !== mealObj))
   }
 
   const handleDayChange = (day) => {
-    setSelectedDays((prev) => {
-      if (prev.includes(day)) {
-        return prev.filter((d) => d !== day)
-      }
-      if (prev.length >= 5) {
-        setError('You can only select up to 5 days.')
-        return prev
-      }
-      return [...prev, day]
-    })
+    setSelectedDays((prev) =>
+      prev.includes(day)
+        ? prev.filter((d) => d !== day)
+        : [...prev, day].slice(0, 5)
+    )
   }
 
   const calculateTotalPrice = () => {
     return selectedMealObjects.reduce((sum, m) => sum + (m.price || 0), 0)
   }
+
   const totalPrice = calculateTotalPrice()
 
-  const handleMealsPerDayChange = (e) => {
-    const num = Number(e.target.value)
-    setMealsPerDay(num)
-    if (selectedMealObjects.length > num) {
-      setSelectedMealObjects((prev) => prev.slice(0, num))
-    }
-  }
+  const mealsPerDay = selectedMealObjects.length
 
-  const handleCheckMorning = () => {
-    if (deliveryTime === '7AM to 11AM (Morning)') {
-      setDeliveryTime('')
-    } else {
-      setDeliveryTime('7AM to 11AM (Morning)')
-    }
-  }
-
-  const handleCheckNight = () => {
-    if (deliveryTime === '6PM to 10PM (Night before)') {
-      setDeliveryTime('')
-    } else {
-      setDeliveryTime('6PM to 10PM (Night before)')
-    }
+  const handleDeliveryTimeToggle = (time) => {
+    setDeliveryTime((prev) => (prev === time ? '' : time))
   }
 
   const handleBack = () => {
@@ -85,7 +65,6 @@ const SubscriptionPage = () => {
       !startingDay ||
       !deliveryTime ||
       !duration ||
-      !mealsPerDay ||
       selectedDays.length === 0 ||
       selectedMealObjects.length === 0
     ) {
@@ -96,10 +75,11 @@ const SubscriptionPage = () => {
     const subscriptionData = {
       startDate: startingDay,
       duration: Number(duration),
-      mealsPerDay: Number(mealsPerDay),
+      mealsPerDay,
       price: totalPrice,
       selectedDays,
       mealPlans: selectedMealObjects,
+      user: user?.id || '',
       preferences: [deliveryTime]
     }
 
@@ -166,21 +146,13 @@ const SubscriptionPage = () => {
         <option value="6">6</option>
       </select>
 
-      <h3>Meals Per Day (1 to 3)</h3>
-      <select value={mealsPerDay} onChange={handleMealsPerDayChange}>
-        <option value="">Select</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-      </select>
-
       <h3>Delivery Time</h3>
       <div className="time-checkboxes">
         <label>
           <input
             type="checkbox"
             checked={deliveryTime === '7AM to 11AM (Morning)'}
-            onChange={handleCheckMorning}
+            onChange={() => handleDeliveryTimeToggle('7AM to 11AM (Morning)')}
           />
           7AM to 11AM (Morning)
         </label>
@@ -188,7 +160,9 @@ const SubscriptionPage = () => {
           <input
             type="checkbox"
             checked={deliveryTime === '6PM to 10PM (Night before)'}
-            onChange={handleCheckNight}
+            onChange={() =>
+              handleDeliveryTimeToggle('6PM to 10PM (Night before)')
+            }
           />
           6PM to 10PM (Night before)
         </label>
@@ -200,11 +174,10 @@ const SubscriptionPage = () => {
         <p>No meals selected yet.</p>
       ) : (
         <ul>
-          {selectedMealObjects.map((mealObj) => {
-            const mealName =
-              mealObj.strMeal || mealObj.name || '(Untitled Meal)'
+          {selectedMealObjects.map((mealObj, index) => {
+            const mealName = mealObj.strMeal || mealObj.name || '(Unnamed Meal)'
             return (
-              <li key={mealName}>
+              <li key={mealObj._id || mealObj.idMeal || index}>
                 {mealName}{' '}
                 <button onClick={() => handleRemoveMeal(mealObj)}>
                   Remove
@@ -223,9 +196,7 @@ const SubscriptionPage = () => {
           mealsPerDay,
           price: totalPrice
         }}
-        selectedMeals={selectedMealObjects.map(
-          (m) => m.strMeal || m.name || '(Untitled Meal)'
-        )}
+        selectedMeals={selectedMealObjects}
       />
     </div>
   )

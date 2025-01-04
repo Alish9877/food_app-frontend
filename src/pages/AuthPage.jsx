@@ -7,30 +7,28 @@ const AuthPage = ({ setUser }) => {
   const location = useLocation()
 
   const [formData, setFormData] = useState({
+    username: '',
     email: '',
     password: '',
-    username: ''
+    confirmPassword: ''
   })
-
-  const [isLogin, setIsLogin] = useState(location.pathname === '/auth/login') // Determine initial state from the URL
+  const [isLogin, setIsLogin] = useState(location.pathname === '/auth/login')
   const [error, setError] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
-  // Update `isLogin` state when the URL changes
   useEffect(() => {
     setIsLogin(location.pathname === '/auth/login')
-    setError(null) // Clear error when switching forms
-    setSuccessMessage(null) // Clear success message when switching forms
+    setError(null)
+    setSuccessMessage(null)
   }, [location.pathname])
 
-  // Redirect to login page after registration success
   useEffect(() => {
     if (successMessage) {
       const timer = setTimeout(() => {
         navigate('/auth/login')
-      }, 2000) // 2-second delay before redirecting
-      return () => clearTimeout(timer) // Cleanup timer on unmount
+      }, 2000)
+      return () => clearTimeout(timer)
     }
   }, [successMessage, navigate])
 
@@ -41,24 +39,31 @@ const AuthPage = ({ setUser }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    // Basic validation
-    if (
-      !formData.email ||
-      !formData.password ||
-      (!isLogin && !formData.username)
-    ) {
-      setError('All fields are required.')
+    if (!formData.email || !formData.password) {
+      setError('Email and password are required.')
       return
     }
-
+    if (!isLogin && !formData.username) {
+      setError('Username is required for registration.')
+      return
+    }
     if (!formData.email.includes('@')) {
       setError('Please enter a valid email address.')
       return
     }
-
     if (formData.password.length < 6) {
       setError('Password must be at least 6 characters.')
       return
+    }
+    if (!isLogin) {
+      if (!formData.confirmPassword) {
+        setError('Please confirm your password.')
+        return
+      }
+      if (formData.password !== formData.confirmPassword) {
+        setError('Passwords do not match.')
+        return
+      }
     }
 
     setIsLoading(true)
@@ -68,14 +73,19 @@ const AuthPage = ({ setUser }) => {
           email: formData.email,
           password: formData.password
         })
-        setUser(user) // Set the user state
-        navigate('/') // Redirect to home
+        setUser(user)
+        navigate('/')
       } else {
-        await registerUser(formData)
+        const { username, email, password } = formData
+        await registerUser({ username, email, password })
         setError(null)
         setSuccessMessage('Registration successful! Redirecting to login...')
-        // Clear the form after registration
-        setFormData({ email: '', password: '', username: '' })
+        setFormData({
+          username: '',
+          email: '',
+          password: '',
+          confirmPassword: ''
+        })
       }
     } catch (err) {
       setError(
@@ -89,15 +99,16 @@ const AuthPage = ({ setUser }) => {
   }
 
   const toggleForm = () => {
-    // Toggle between login and register
     navigate(isLogin ? '/auth/register' : '/auth/login')
   }
 
   return (
     <div className="auth-page">
       <h1>{isLogin ? 'Login' : 'Register'}</h1>
+
       {error && <p className="error">{error}</p>}
       {successMessage && <p className="success">{successMessage}</p>}
+
       <form onSubmit={handleSubmit}>
         {!isLogin && (
           <input
@@ -108,6 +119,7 @@ const AuthPage = ({ setUser }) => {
             onChange={handleChange}
           />
         )}
+
         <input
           type="email"
           name="email"
@@ -115,6 +127,7 @@ const AuthPage = ({ setUser }) => {
           value={formData.email}
           onChange={handleChange}
         />
+
         <input
           type="password"
           name="password"
@@ -122,10 +135,22 @@ const AuthPage = ({ setUser }) => {
           value={formData.password}
           onChange={handleChange}
         />
+
+        {!isLogin && (
+          <input
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm your password"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+          />
+        )}
+
         <button type="submit" disabled={isLoading}>
           {isLoading ? 'Processing...' : isLogin ? 'Login' : 'Register'}
         </button>
       </form>
+
       <button onClick={toggleForm} disabled={isLoading}>
         {isLogin
           ? 'Need an account? Register'

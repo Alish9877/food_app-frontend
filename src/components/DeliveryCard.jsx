@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import './DeliveryCard.css'
 
-const DeliveryCard = ({ delivery, onDeliveryChange }) => {
-
+const DeliveryCard = ({ delivery, onDeliveryChange, onUpdated }) => {
   const { id, status, meals, totalPrice } = delivery
 
   const [deliveryDate, setDeliveryDate] = useState(delivery.deliveryDate || '')
@@ -21,9 +20,14 @@ const DeliveryCard = ({ delivery, onDeliveryChange }) => {
       return
     }
 
-    const locationString = `${building ? 'Bldg ' + building + ', ' : ''}${
-      block ? 'Block ' + block + ', ' : ''
-    }${street ? 'St ' + street + ', ' : ''}${flat ? 'Flat ' + flat : ''}`.trim()
+    const locationString = [
+      building ? `Bldg ${building}` : '',
+      block ? `Block ${block}` : '',
+      street ? `St ${street}` : '',
+      flat ? `Flat ${flat}` : ''
+    ]
+      .filter(Boolean)
+      .join(', ')
 
     const updatedDelivery = {
       ...delivery,
@@ -32,7 +36,9 @@ const DeliveryCard = ({ delivery, onDeliveryChange }) => {
       location: locationString,
       meals: meals || []
     }
+
     onDeliveryChange(updatedDelivery)
+    if (onUpdated) onUpdated()
   }
 
   return (

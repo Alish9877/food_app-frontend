@@ -5,7 +5,7 @@ const HomePage = ({ user }) => {
   return (
     <div className="home-page">
       <header className="home-header">
-        <h1>Welcome to Food App</h1>
+        <h1>Welcome {user?.username ? `, ${user.username}` : 'to Food App'}</h1>
         <p>
           Explore meal plans, manage subscriptions, and track your deliveries
           effortlessly!
@@ -30,6 +30,11 @@ const HomePage = ({ user }) => {
             <Link to="/deliveries" className="home-button">
               Track Deliveries
             </Link>
+            {user.role === 'Admin' && (
+              <Link to="/admin" className="home-button">
+                Admin Dashboard
+              </Link>
+            )}
           </div>
         )}
       </header>

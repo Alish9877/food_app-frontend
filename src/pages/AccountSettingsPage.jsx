@@ -1,5 +1,9 @@
 import { useState } from 'react'
-import { updateUserProfile, updateUserPassword } from '../services/authService'
+import {
+  updateUserProfile,
+  updateUserPassword,
+  deleteUserAccount
+} from '../services/authService'
 
 const AccountSettingsPage = ({ user, setUser }) => {
   const [formData, setFormData] = useState({
@@ -7,12 +11,17 @@ const AccountSettingsPage = ({ user, setUser }) => {
     oldPassword: '',
     newPassword: ''
   })
+  const [profileImage, setProfileImage] = useState(null)
   const [error, setError] = useState(null)
   const [message, setMessage] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
+
+  const handleImageChange = (e) => {
+    setProfileImage(e.target.files[0])
   }
 
   const updateUsername = async () => {
@@ -67,6 +76,49 @@ const AccountSettingsPage = ({ user, setUser }) => {
     }
   }
 
+  const uploadProfileImage = async () => {
+    if (!profileImage) {
+      setError('Please select an image to upload.')
+      setMessage(null)
+      return
+    }
+    const formData = new FormData()
+    formData.append('profileImage', profileImage)
+
+    setIsLoading(true)
+    try {
+      const updatedUser = await updateUserProfile(user.id, formData)
+      setUser({ ...user, profileImage: updatedUser.profileImage })
+      setMessage('Profile image updated successfully!')
+      setError(null)
+    } catch (error) {
+      setError('Failed to update profile image. Please try again.')
+      setMessage(null)
+      console.error('Update profile image error:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleDeleteAccount = async () => {
+    const confirmDelete = window.confirm(
+      'Are you sure you want to delete your account? This action cannot be undone.'
+    )
+    if (!confirmDelete) return
+
+    setIsLoading(true)
+    try {
+      await deleteUserAccount(user.id)
+      setMessage('Account deleted successfully.')
+      setUser(null)
+    } catch (error) {
+      setError('Failed to delete account. Please try again.')
+      console.error('Delete account error:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   if (!user) {
     return <p>Loading user data...</p>
   }
@@ -111,6 +163,24 @@ const AccountSettingsPage = ({ user, setUser }) => {
         />
         <button type="button" onClick={updatePassword} disabled={isLoading}>
           {isLoading ? 'Updating...' : 'Update Password'}
+        </button>
+      </div>
+
+      <div className="update-section">
+        <label>Profile Image:</label>
+        <input type="file" onChange={handleImageChange} />
+        <button type="button" onClick={uploadProfileImage} disabled={isLoading}>
+          {isLoading ? 'Uploading...' : 'Upload Image'}
+        </button>
+      </div>
+
+      <div className="update-section">
+        <button
+          type="button"
+          onClick={handleDeleteAccount}
+          className="delete-account-button"
+        >
+          Delete Account
         </button>
       </div>
     </div>
