@@ -29,8 +29,7 @@ const Nav = ({ user, handleLogOut }) => {
         {user && (
           <>
             <Link to="/meal-plans">Meal Plans</Link>
-            <Link to="/subscriptions">Subscriptions</Link>
-            <Link to="/deliveries">Deliveries</Link>
+            <Link to="/dashboard">Dashboard</Link>
             {user.role === 'Admin' && <Link to="/admin">Admin Dashboard</Link>}
           </>
         )}

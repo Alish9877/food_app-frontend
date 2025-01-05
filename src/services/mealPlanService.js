@@ -23,30 +23,17 @@ export const fetchMealPlanById = async (mealPlanId) => {
 }
 
 // Create a new meal plan (Admin only)
-export const createMealPlan = async (mealPlanData) => {
-  try {
-    const res = await Client.post('/meal-plans', mealPlanData)
-    return res.data
-  } catch (error) {
-    console.error('Error creating meal plan:', error)
-    throw error.response?.data || 'Error creating meal plan'
+export const createMealPlan = async (mealPlanData, imageFile) => {
+  const formData = new FormData()
+  Object.keys(mealPlanData).forEach((key) => {
+    formData.append(key, mealPlanData[key])
+  })
+  if (imageFile) {
+    formData.append('image', imageFile)
   }
-}
-
-export const createMealPlanFromExternal = async (externalMeal) => {
-  const mappedMealPlan = {
-    name: externalMeal.strMeal,
-    description: externalMeal.strInstructions
-      ? externalMeal.strInstructions.slice(0, 100) + '...'
-      : 'No instructions available',
-    dishes: [externalMeal.strMeal],
-    price: externalMeal.price || 10,
-    category: externalMeal.strCategory || 'Misc',
-    source: 'external',
-    externalId: externalMeal.idMeal
-  }
-
-  const res = await Client.post('/meal-plans', mappedMealPlan)
+  const res = await Client.post('/meal-plans', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  })
   return res.data
 }
 

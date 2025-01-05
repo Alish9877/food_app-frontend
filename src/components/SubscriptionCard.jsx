@@ -1,22 +1,29 @@
 const SubscriptionCard = ({ subscription, selectedMeals }) => {
-  const { mealPlanName, startDate, duration, mealsPerDay, price } = subscription
-
   return (
     <div className="subscription-card">
-      <h3>Meal Plan: {mealPlanName || 'N/A'}</h3>
-      <p>
-        Start Date:{' '}
-        {startDate ? new Date(startDate).toLocaleDateString() : 'N/A'}
-      </p>
-      <p>Duration: {duration || 'N/A'} months</p>
-      <p>Meals Per Day: {mealsPerDay || 'N/A'}</p>
-      <p>Price: ${price ? price.toFixed(2) : '0.00'}</p>
+      <h3>{subscription.mealPlanName || 'Your Selected Meals'}</h3>
+      <p>Start Date: {subscription.startDate}</p>
+      <p>Duration: {subscription.duration} months</p>
+      <p>Meals Per Day: {subscription.mealsPerDay}</p>
+      <p>Total Price: ${subscription.price}</p>
       <ul>
-        {selectedMeals && selectedMeals.length > 0 ? (
-          selectedMeals.map((meal, index) => <li key={index}>{meal}</li>)
-        ) : (
-          <p>No meals selected</p>
-        )}
+        {selectedMeals.map((meal, index) => {
+          const imageSrc =
+            meal.image?.url ||
+            (meal.image?.data
+              ? `data:${meal.image.contentType};base64,${Buffer.from(
+                  meal.image.data
+                ).toString('base64')}`
+              : '')
+          const mealName = meal.name || meal.strMeal || '(Unnamed Meal)'
+
+          return (
+            <li key={`${mealName}-${index}`}>
+              {imageSrc && <img src={imageSrc} alt={mealName} />}
+              {mealName}
+            </li>
+          )
+        })}
       </ul>
     </div>
   )

@@ -9,6 +9,8 @@ import DeliveryPage from './pages/DeliveryPage'
 import HomePage from './pages/HomePage'
 import MealPlansPage from './pages/MealPlansPage'
 import SubscriptionPage from './pages/SubscriptionPage'
+import ReviewPage from './pages/ReviewPage'
+import DashboardPage from './pages/DashboardPage'
 import './App.css'
 
 const App = () => {
@@ -18,7 +20,6 @@ const App = () => {
   })
   const navigate = useNavigate()
 
-  // Restore user session on app load
   useEffect(() => {
     const restoreSession = async () => {
       try {
@@ -69,15 +70,12 @@ const App = () => {
       <Nav user={user} handleLogOut={handleLogOut} />
       <main className="main-content">
         <Routes>
-          {/* Public Routes */}
           <Route path="/" element={<HomePage user={user} />} />
           <Route path="/auth/login" element={<AuthPage setUser={setUser} />} />
           <Route
             path="/auth/register"
             element={<AuthPage setUser={setUser} />}
           />
-
-          {/* Protected Routes */}
           <Route
             path="/account-settings"
             element={
@@ -106,11 +104,19 @@ const App = () => {
               <ProtectedRoute component={<SubscriptionPage user={user} />} />
             }
           />
-
-          {/* Admin Route */}
           <Route
             path="/admin"
             element={<AdminRoute component={<AdminPage />} />}
+          />
+          <Route
+            path="/review"
+            element={<ProtectedRoute component={<ReviewPage />} />}
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute component={<DashboardPage user={user} />} />
+            }
           />
         </Routes>
       </main>
