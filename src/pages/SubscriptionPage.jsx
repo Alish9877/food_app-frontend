@@ -62,7 +62,7 @@ const SubscriptionPage = ({ user }) => {
     e.preventDefault()
 
     if (
-      !userId ||
+      !user ||
       !startingDay ||
       !deliveryTime ||
       !duration ||
