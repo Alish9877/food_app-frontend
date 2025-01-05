@@ -1,6 +1,4 @@
-// SubscriptionPage.jsx
-
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useId } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { createSubscription } from '../services/subscriptionService'
 import SubscriptionCard from '../components/SubscriptionCard'
@@ -12,14 +10,15 @@ const SubscriptionPage = () => {
   const [deliveryTime, setDeliveryTime] = useState('')
   const [duration, setDuration] = useState('')
   const [mealsPerDay, setMealsPerDay] = useState('')
-  const [duration, setDuration] = useState('')
-  const [mealsPerDay, setMealsPerDay] = useState('')
   const [selectedMeals, setSelectedMeals] = useState([])
   const [error, setError] = useState(null)
   const [successMessage, setSuccessMessage] = useState(null)
   const location = useLocation()
   const navigate = useNavigate()
 
+  
+  const userId = location.state?.userId
+  
   const { mealPlans = [], backendMealPlans = [] } = location.state || {}
 
   useEffect(() => {
@@ -64,6 +63,7 @@ const SubscriptionPage = () => {
     e.preventDefault()
 
     if (
+      !userId ||
       !startingDay ||
       !deliveryTime ||
       !duration ||
@@ -76,7 +76,7 @@ const SubscriptionPage = () => {
     }
 
     const subscriptionData = {
-      user,  // Pass the whole user object instead of just userId
+      user: userId,
       startingDay,
       deliveryTime,
       duration: Number(duration),

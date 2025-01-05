@@ -169,7 +169,9 @@ const MealPlansPage = ({ user }) => {
         .map((meal) => `meal=${encodeURIComponent(meal.name || meal.strMeal)}`)
         .join('&')
 
-      navigate(`/subscriptions?${queryString}`)
+
+navigate(`/subscriptions?${queryString}`, { state: { userId: '67764604f7f3b003a024cac2' } })
+
     } catch (error) {
       console.error('Error completing the selection:', error)
     }
