@@ -8,6 +8,7 @@ const SubscriptionCRUD = lazy(() =>
 )
 const DeliveryCRUD = lazy(() => import('../components/admin/DeliveryCRUD'))
 
+
 const AdminPage = () => {
   const [activeTab, setActiveTab] = useState('mealPlans') // Default tab
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useId } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import SubscriptionCard from '../components/SubscriptionCard'
 import './SubscriptionPage.css'
@@ -62,6 +62,7 @@ const SubscriptionPage = ({ user }) => {
     e.preventDefault()
 
     if (
+      !user ||
       !startingDay ||
       !deliveryTime ||
       !duration ||
@@ -203,3 +204,5 @@ const SubscriptionPage = ({ user }) => {
 }
 
 export default SubscriptionPage
+
+
