@@ -5,7 +5,7 @@ import {
   updateMealPlan,
   deleteMealPlan
 } from '../../services/mealPlanService'
-import '../admin/MealPlanCRUD.css'
+
 
 const MealPlanCRUD = () => {
   const [mealPlans, setMealPlans] = useState([])

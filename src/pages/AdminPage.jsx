@@ -1,5 +1,5 @@
 import { useState, lazy, Suspense } from 'react'
-import './AdminPage.css'
+
 
 // Lazy loading components for better performance
 const MealPlanCRUD = lazy(() => import('../components/admin/MealPlanCRUD'))

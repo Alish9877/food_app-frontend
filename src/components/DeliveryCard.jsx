@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import './DeliveryCard.css'
+
 
 const DeliveryCard = ({ delivery, onDeliveryChange, onUpdated }) => {
   const { id, status, meals, totalPrice } = delivery

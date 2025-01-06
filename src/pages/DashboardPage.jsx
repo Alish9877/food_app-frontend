@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { fetchUserDeliveries } from '../services/deliveryService'
 import { fetchUserSubscriptions } from '../services/subscriptionService'
-import './DashboardPage.css'
+
 
 const DashboardPage = ({ user }) => {
   const [subscriptions, setSubscriptions] = useState([])

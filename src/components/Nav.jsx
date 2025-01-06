@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import './MealPlanCard.css'
-import './Nav.css'
+
+
 
 const Nav = ({ user, handleLogOut }) => {
   const [showDropdown, setShowDropdown] = useState(false)

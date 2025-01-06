@@ -1,0 +1,770 @@
+.navbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+  background: linear-gradient(to right, #0a2b00, #196a00);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* Container for Links */
+.nav-links {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+}
+
+.nav-links a {
+  font-size: 1.2rem;
+  color: #fff;
+  text-decoration: none;
+  padding: 10px;
+  transition: color 0.3s, border-bottom 0.3s;
+}
+
+/* Hover Effect: Orange Line Under the Nav Item */
+.nav-links a:hover {
+  color: #ffa500; /* Orange color on hover */
+  border-bottom: 2px solid #ffa500; /* Orange line below item */
+}
+
+/* Auth Links Section */
+.auth-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-left: auto; /* Align the auth links to the right */
+}
+
+.auth-links span {
+  font-size: 1.2rem;
+  color: #fff;
+}
+
+.auth-links button {
+  background-color: #ff4500;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.auth-links button:hover {
+  background-color: #ff6347;
+}
+
+.auth-links a {
+  color: #fff;
+  font-size: 1.2rem;
+  text-decoration: none;
+  padding: 10px;
+  transition: color 0.3s ease;
+}
+
+.auth-links a:hover {
+  color: #ffa500;
+}
+/* delivery css */
+.delivery-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  padding: 20px;
+  width: 300px;
+  transition: transform 0.2s;
+}
+
+.delivery-card:hover {
+  transform: scale(1.05);
+}
+
+.delivery-card h3 {
+  font-size: 1.5em;
+  margin: 10px 0;
+  color: #333;
+}
+
+.delivery-card p {
+  font-size: 1em;
+  color: #666;
+}
+
+.delivery-card ul {
+  padding-left: 20px;
+}
+
+.delivery-card li {
+  font-size: 1em;
+  color: #444;
+  margin-bottom: 5px;
+}
+
+.optional-fields {
+  margin-top: 10px;
+}
+
+.optional-fields input {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.delivery-card button {
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 1em;
+  margin-top: 10px;
+  transition: background-color 0.3s;
+}
+
+.delivery-card button:hover {
+  background-color: #45a049;
+}
+/* Meal Plan Card Styling */
+.meal-plan-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  padding: 20px;
+  width: 280px; 
+  transition: transform 0.2s;
+}
+
+.meal-plan-card:hover {
+  transform: scale(1.05); 
+}
+
+.meal-plan-card h2 {
+  font-size: 1.5rem;
+  margin: 10px 0;
+  color: #333;
+  text-align: center; 
+}
+
+.meal-plan-card p {
+  font-size: 1rem;
+  color: #666; 
+  margin-bottom: 10px;
+}
+
+.meal-plan-card p strong {
+  color: #333; 
+}
+
+.meal-plan-card img {
+  border-radius: 8px;
+  max-width: 100%;
+  height: auto;
+}
+
+.meal-plan-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 10px;
+  padding: 20px;
+  width: 300px;
+  transition: transform 0.2s;
+}
+
+.meal-plan-card:hover {
+  transform: scale(1.05);
+}
+
+.meal-plan-card img {
+  border-radius: 8px;
+  max-width: 100%;
+  height: auto;
+}
+
+.meal-plan-card h3 {
+  font-size: 1.5em;
+  margin: 10px 0;
+  color: #333;
+}
+
+.meal-plan-card p {
+  font-size: 1em;
+  color: #666;
+}
+
+.add-button {
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 1em;
+  margin-top: 10px;
+  transition: background-color 0.3s;
+}
+
+.add-button.selected {
+  background-color: #FF6347;
+}
+
+.add-button:hover {
+  background-color: #45a049;
+}
+
+.add-button.selected:hover {
+  background-color: #FF4500;
+}
+
+/* admin page */
+.admin-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.admin-tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.tab-button {
+  padding: 10px 20px;
+  margin: 0 5px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.tab-button:hover {
+  background-color: #eaeaea;
+}
+
+.tab-button.active {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.admin-content {
+  padding: 20px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  border-radius: 5px;
+}
+/* dashboard css */
+.dashboard-page {
+  padding: 20px;
+}
+
+.dashboard-info {
+  margin-bottom: 20px;
+}
+
+.dashboard-actions ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.dashboard-actions ul li {
+  margin: 10px 0;
+}
+
+.dashboard-actions ul li a {
+  color: #3a2c4d;
+  text-decoration: none;
+}
+
+.dashboard-actions ul li a:hover {
+  text-decoration: underline;
+}
+.dashboard-page table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.dashboard-page th,
+.dashboard-page td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.dashboard-page th {
+  background-color: #f4f4f4;
+}
+/* delivery page style */
+.delivery-page {
+  padding: 20px;
+  text-align: center;
+}
+
+.delivery-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  padding: 20px;
+}
+/* home page css */
+.home-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 16px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.home-header {
+  margin-bottom: 24px;
+}
+
+.home-header h1 {
+  font-size: 2em;
+  color: #333;
+}
+
+.home-header p {
+  color: #666;
+  margin: 16px 0;
+}
+
+.home-header button {
+  background-color: #3a873e;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 16px;
+  cursor: pointer;
+  margin: 8px;
+}
+
+.home-actions {
+  margin: 24px 0;
+}
+
+.home-button {
+  display: inline-block;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin: 8px;
+  text-decoration: none;
+}
+
+.home-button:hover {
+  background-color: #218838;
+}
+
+.home-footer {
+  margin-top: 24px;
+  color: #666;
+}
+/* AuthPage styles */
+.auth-page {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 16px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+.auth-header {
+  margin-bottom: 24px;
+}
+.auth-header h1 {
+  font-size: 2em;
+  color: #333;
+}
+.auth-header p {
+  color: #666;
+  margin: 16px 0;
+}
+.error {
+  color: red;
+  margin: 16px 0;
+}
+.success {
+  color: green;
+  margin: 16px 0;
+}
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.auth-form input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.auth-form button {
+  background-color: #3a873e;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 16px;
+  cursor: pointer;
+  margin: 8px;
+}
+.auth-form button:hover {
+  background-color: #2e6b2f;
+}
+.auth-footer {
+  margin-top: 24px;
+  color: #666;
+}
+.account-settings-page {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 16px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+.update-section {
+  margin: 24px 0;
+}
+.update-section label {
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+}
+.update-section input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.update-section button {
+  background-color: #3a873e;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 16px;
+  cursor: pointer;
+  margin: 8px;
+}
+/* meal plans page css */
+.meal-plans-page {
+  padding: 20px;
+  text-align: center;
+}
+
+.filter-container {
+  margin-bottom: 20px;
+}
+
+.filter-container label {
+  margin-right: 10px;
+}
+
+.meal-plan-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  padding: 20px;
+}
+/* subscription page css */
+.subscription-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 16px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.subscription-page h1 {
+  text-align: center;
+  color: #333;
+}
+
+.subscription-page h3 {
+  margin-top: 24px;
+  color: #333;
+}
+
+.subscription-page .filter-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.subscription-page .filter-container label {
+  display: flex;
+  align-items: center;
+  background-color: #e0e0e0;
+  padding: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.subscription-page .filter-container input {
+  margin-right: 8px;
+}
+
+.subscription-page input[type="date"] {
+  width: 100%;
+  padding: 8px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.subscription-page button {
+  background-color: #f8fcf7;
+  color: rgb(8, 8, 8);
+  border: none;
+  border-radius: 4px;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+
+.subscription-page p {
+  color: #666;
+  text-align: center;
+}
+
+.subscription-page .subscription-card {
+  margin-top: 24px;
+  padding: 16px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.subscription-page .subscription-card h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.subscription-page .subscription-card p {
+  margin: 8px 0;
+  color: #666;
+}
+
+.subscription-page .subscription-card ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 8px 0;
+}
+
+.subscription-page .subscription-card ul li {
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  padding: 8px;
+  margin: 4px 0;
+}
+/* admin delivery css */
+.delivery-crud {
+  margin: 20px;
+}
+
+.delivery-crud h2 {
+  text-align: center;
+}
+
+.delivery-crud form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.delivery-crud form input,
+.delivery-crud form select,
+.delivery-crud form button {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.delivery-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.delivery-table th,
+.delivery-table td {
+  padding: 10px;
+  border: 1px solid #ccc;
+  text-align: left;
+}
+
+.delivery-table th {
+  background-color: #f4f4f4;
+}
+
+.delivery-table button {
+  margin-right: 5px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.delivery-table button:hover {
+  background-color: #0056b3;
+}
+
+.error {
+  color: red;
+  text-align: center;
+}
+/* admin meal plan css */
+.meal-plan-crud {
+  margin: 20px;
+}
+
+.meal-plan-crud h2 {
+  text-align: center;
+}
+
+.meal-plan-crud form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.meal-plan-crud form input,
+.meal-plan-crud form textarea,
+.meal-plan-crud form button {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.meal-plan-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.meal-plan-table th,
+.meal-plan-table td {
+  padding: 10px;
+  border: 1px solid #ccc;
+  text-align: left;
+}
+
+.meal-plan-table th {
+  background-color: #f4f4f4;
+}
+
+.meal-plan-table button {
+  margin-right: 5px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.meal-plan-table button:hover {
+  background-color: #0056b3;
+}
+
+.error {
+  color: red;
+  text-align: center;
+}
+
+/* admin subscription css */
+.meal-plan-crud {
+  margin: 20px;
+}
+
+.meal-plan-crud h2 {
+  text-align: center;
+}
+
+.meal-plan-crud form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.meal-plan-crud form input,
+.meal-plan-crud form textarea,
+.meal-plan-crud form button {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.meal-plan-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.meal-plan-table th,
+.meal-plan-table td {
+  padding: 10px;
+  border: 1px solid #ccc;
+  text-align: left;
+}
+
+.meal-plan-table th {
+  background-color: #f4f4f4;
+}
+
+.meal-plan-table button {
+  margin-right: 5px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.meal-plan-table button:hover {
+  background-color: #0056b3;
+}
+
+.error {
+  color: red;
+  text-align: center;
+}
