@@ -1,57 +1,96 @@
 import { useState, useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
-import axios from 'axios'
+import { useLocation, useNavigate } from 'react-router-dom'
 import DeliveryCard from '../components/DeliveryCard'
 import './DeliveryPage.css'
 
 const DeliveryPage = () => {
   const [deliveries, setDeliveries] = useState([])
   const [error, setError] = useState(null)
+  const [updateMessage, setUpdateMessage] = useState(null)
+
   const location = useLocation()
+  const navigate = useNavigate()
 
   useEffect(() => {
-    // Check if there's subscription data passed from the previous page
-    if (location.state && location.state.subscriptionData) {
-      const { startingDay, deliveryTime, selectedMeals, totalPrice } =
-        location.state.subscriptionData
+    const subscriptionData = location.state?.subscriptionData
+    if (subscriptionData) {
+      const { startDate, mealPlans, price } = subscriptionData
 
       const newDelivery = {
-        id: Date.now(), // Temporary unique ID
-        deliveryDate: startingDay,
-        deliveryTime,
+        id: Date.now(),
+        deliveryDate: startDate,
         status: 'Pending',
-        meals: selectedMeals,
-        totalPrice
+        meals: mealPlans.map((m) =>
+          typeof m === 'object' ? m.strMeal || m.name || 'Unnamed Meal' : m
+        ),
+        totalPrice: price || 0
       }
-
-      // Add the new delivery to the list
-      setDeliveries((prev) => [...prev, newDelivery])
+      setDeliveries([newDelivery])
     }
   }, [location.state])
 
-  const handleSave = async (updatedDelivery) => {
-    try {
-      const response = await axios.post(
-        'http://localhost:3001/deliveries',
-        updatedDelivery
-      )
-      setDeliveries((prevDeliveries) =>
-        prevDeliveries.map((delivery) =>
-          delivery.id === updatedDelivery.id ? updatedDelivery : delivery
-        )
-      )
-      console.log('Saved delivery:', response.data)
-    } catch (error) {
-      console.error('Error saving delivery:', error)
-      setError('Failed to save delivery. Please try again later.')
+  const handleDeliveryChange = (updatedDelivery) => {
+    setDeliveries((prev) =>
+      prev.map((d) => (d.id === updatedDelivery.id ? updatedDelivery : d))
+    )
+  }
+
+  const handleDeliveryUpdated = () => {
+    setUpdateMessage('Delivery updated!')
+    setTimeout(() => setUpdateMessage(null), 2000)
+  }
+
+  const handleBackToSubscription = () => {
+    navigate('/subscriptions')
+  }
+
+  const validateDeliveries = () => {
+    for (const d of deliveries) {
+      if (!d.deliveryDate) {
+        return 'Please set a delivery date for all deliveries.'
+      }
+      if (!d.location) {
+        return 'Please fill location info for all deliveries (building/block/etc.).'
+      }
+      if (!d.meals || d.meals.length === 0) {
+        return 'Missing meals for one of the deliveries.'
+      }
     }
+    return null
+  }
+
+  const handleContinue = () => {
+    const validationError = validateDeliveries()
+    if (validationError) {
+      setError(validationError)
+      return
+    }
+
+    setError(null)
+    navigate('/review', {
+      state: {
+        subscriptionData: location.state?.subscriptionData,
+        deliveries
+      }
+    })
   }
 
   return (
     <div className="delivery-page">
-      <h1>Deliveries</h1>
+      <h1>Delivery Info</h1>
       {error && <p className="error">{error}</p>}
-      <p>Track your meal deliveries here.</p>
+      {updateMessage && <p className="success">{updateMessage}</p>}
+
+      <p>Please fill in the delivery date & address details below.</p>
+
+      <div className="button-row">
+        <button onClick={handleBackToSubscription} className="back-button">
+          Back to Subscription
+        </button>
+        <button onClick={handleContinue} className="continue-button">
+          Continue
+        </button>
+      </div>
 
       <div className="delivery-container">
         {deliveries.length > 0 ? (
@@ -59,7 +98,8 @@ const DeliveryPage = () => {
             <DeliveryCard
               key={delivery.id}
               delivery={delivery}
-              handleSave={handleSave}
+              onDeliveryChange={handleDeliveryChange}
+              onUpdated={handleDeliveryUpdated}
             />
           ))
         ) : (

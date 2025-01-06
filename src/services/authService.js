@@ -41,6 +41,19 @@ export const checkSession = async () => {
   }
 }
 
+// Delete user account
+export const deleteUserAccount = async (userId) => {
+  try {
+    const res = await Client.delete(`/users/${userId}`);
+    removeToken();
+    return res.data;
+  } catch (error) {
+    console.error('Error deleting user account:', error);
+    throw error.response?.data || 'Error deleting user account';
+  }
+};
+
+
 // Token management
 export const saveToken = (token) => {
   if (token) localStorage.setItem('token', token)
