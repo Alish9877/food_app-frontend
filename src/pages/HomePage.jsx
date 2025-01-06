@@ -53,28 +53,7 @@ const HomePage = ({ user }) => {
           </div>
         )}
       </header>
-      <main className="home-slideshow">
-        {error && <p className="error">{error}</p>}
-        {mealPlans.length > 0 ? (
-          <div className="slideshow-container">
-            {mealPlans.map((mealPlan) => (
-              <div key={mealPlan._id} className="slideshow-slide">
-                <img
-                  src={mealPlan.image}
-                  alt={mealPlan.name}
-                  className="slideshow-image"
-                />
-                <div className="slideshow-content">
-                  <h3>{mealPlan.name}</h3>
-                  <p>{mealPlan.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p>Loading meal plans...</p>
-        )}
-      </main>
+      
       <footer className="home-footer">
         <p>&copy; {new Date().getFullYear()} Food App. All rights reserved.</p>
       </footer>
