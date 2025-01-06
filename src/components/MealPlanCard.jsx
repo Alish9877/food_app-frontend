@@ -1,4 +1,4 @@
-import './MealPlanCard.css'
+
 
 const MealPlanCard = ({ mealPlan, onAdd, onRemove, selected }) => {
   const getImageSrc = () => {

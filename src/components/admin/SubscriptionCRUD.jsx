@@ -6,7 +6,7 @@ import {
   cancelSubscription // Updated function name
 } from '../../services/subscriptionService'
 import { fetchAllMealPlans } from '../../services/mealPlanService'
-import '../admin/SubscriptionCRUD.css'
+
 
 const SubscriptionCRUD = () => {
   const [subscriptions, setSubscriptions] = useState([])

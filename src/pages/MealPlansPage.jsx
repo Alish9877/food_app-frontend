@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import MealPlanCard from '../components/MealPlanCard'
 import { fetchAllMealPlans } from '../services/mealPlanService'
-import './MealPlansPage.css'
+
 
 const MealPlansPage = ({ user }) => {
   const [mealPlans, setMealPlans] = useState([])

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import DeliveryCard from '../components/DeliveryCard'
-import './DeliveryPage.css'
+
 
 const DeliveryPage = () => {
   const [deliveries, setDeliveries] = useState([])

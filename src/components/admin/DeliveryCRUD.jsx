@@ -6,7 +6,7 @@ import {
   deleteDelivery
 } from '../../services/deliveryService'
 import { fetchAllSubscriptions } from '../../services/subscriptionService'
-import '../admin/DeliveryCRUD.css'
+
 
 const DeliveryCRUD = () => {
   const [deliveries, setDeliveries] = useState([])

@@ -1,7 +1,7 @@
 import { useState, useEffect, useId } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import SubscriptionCard from '../components/SubscriptionCard'
-import './SubscriptionPage.css'
+
 
 const SubscriptionPage = ({ user }) => {
   const [selectedDays, setSelectedDays] = useState([])

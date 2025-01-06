@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { fetchAllMealPlans } from '../services/mealPlanService'
-import './HomePage.css'
+
 
 const HomePage = ({ user }) => {
   const [mealPlans, setMealPlans] = useState([])
